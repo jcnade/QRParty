@@ -1,0 +1,170 @@
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<title>Web QR</title>
+
+<style type="text/css">
+body{
+    width:100%;
+    text-align:center;
+}
+
+
+img{
+    border:0;
+}
+#main{
+    margin: 15px auto;
+    background:white;
+    overflow: auto;
+	width: 750px;
+}
+#header{
+    background:white;
+}
+#mainbody{
+    background: white;
+    width:100%;
+	display:none;
+}
+#footer{
+    background:white;
+}
+#qrfile{
+    width:320px;
+    height:240px;
+}
+#v{
+    width:320px;
+    height:240px;
+}
+#qr-canvas{
+    display:none;
+}
+#iembedflash{
+    margin:0;
+    padding:0;
+}
+#mp1{
+    text-align:center;
+    font-size:25px;
+}
+#mp2{
+    text-align:center;
+    font-size:25px;
+	color:red;
+}
+.selector{
+	border: solid;
+	border-width: 3px 3px 1px 3px;
+    margin:0;
+    padding:0;
+    cursor:pointer;
+    margin-bottom:-5px;
+}
+#outdiv
+{
+    margin: auto;
+    width:320px;
+    height:240px;
+	border: solid;
+	border-width: 2px 2px 2px 2px;
+}
+#result{
+    margin: auto;
+    border: solid;
+	border-width: 1px 1px 1px 1px;
+    background: #eeeeee;
+	padding:20px;
+    width:280px;
+    margin-top: 10px;
+}
+
+#imghelp{
+    position:relative;
+    left:0px;
+    top:-160px;
+    z-index:100;
+    font:18px arial,sans-serif;
+    background:#f0f0f0;
+	margin-left:35px;
+	margin-right:35px;
+	padding-top:10px;
+	padding-bottom:10px;
+	border-radius:20px;
+}
+p.helptext{
+    margin-top:54px;
+    font:18px arial,sans-serif;
+}
+p.helptext2{
+    margin-top:100px;
+    font:18px arial,sans-serif;
+}
+ul{
+    margin-bottom:0;
+    margin-right:40px;
+}
+li{
+    display:inline;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    font-weight: bold;
+    border-right: 1px solid #333333;
+}
+li a{
+    text-decoration: none;
+    color: black;
+}
+
+#footer a{
+	color: black;
+}
+.tsel{
+    padding:0;
+}
+
+#tooltip1 { 
+    position: relative; 
+    text-decoration: none;
+    font:15px arial,sans-serif;
+    text-align:center;
+    color:red;
+}
+#tooltip1 a {text-decoration: none; color:red;}
+#tooltip1 a span { display: none; color: #FFFFFF; }
+#tooltip1 a:hover span { text-decoration: none;display: block; position: absolute; width: 250px; background-color: #ddd; height: 50px; left: -10px; top: -10px; color: black; padding: 5px; }
+
+</style>
+
+<script type="text/javascript" src="/js/llqrcode.js"></script>
+<script type="text/javascript" src="/js/plusone.js"></script>
+<script type="text/javascript" src="/js/webqr.js"></script>
+<script type="text/javascript" src="/js/d3.js"></script>
+
+
+
+</head>
+
+<body onload="load(); setwebcam(); ">
+<embed src="/js/POS1.WAV" autostart="false" width="0" height="0" id="sound1" enablejavascript="true">
+
+<div id="mainbody">
+
+    <div id="main">
+    <div id="header">
+
+    <h2>QR Vote</h2>
+
+<a href=# id="webcamimg" onclick="setwebcam()" >OpenCam</a>
+
+    <div id="outdiv"><p class="helptext2" >Vote is offline</p></div>
+
+    <div id="result"></div>
+
+    <canvas id="qr-canvas" width="800" height="600"></canvas>
+
+</div>
+</body>
+
+</html>
