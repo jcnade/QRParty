@@ -34,11 +34,10 @@ app.get('/',      routes.index);
 app.get('/scan',  routes.scan);
 app.get('/steam', routes.steam);
 app.get('/vote/:userID/:voteNumber',  routes.vote);
-app.get('/encoder/:partyTag/:usermax/:votemax',  routes.encoder);
-
-
-
-
+app.get('/encoder/:partytag',  routes.encoder);
+app.get('/make', routes.make);
+app.get('/admin/:partytag', routes.admin);
+app.post('/make', routes.make);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){

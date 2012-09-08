@@ -1,0 +1,33 @@
+html
+	script(type="text/javascript", src="http://d3js.org/d3.v2.js")
+	script(type="text/javascript", src="/js/cookie.js")
+	link(rel="stylesheet", type="text/css", href="/stylesheets/bootstrap.css")
+	link(rel="stylesheet", type="text/css", href="/stylesheets/bootstrap-responsive.css")
+	body
+		.container
+			.row-fluid
+				.span5
+					h2 Admin you party #{partytag}
+					hr					
+					a(class='btn', href='/encoder/'+partytag) Print QR list for  #{partytag}
+					legend Add a pool  
+					form(class='form-horizontal', action='/admin', method='post')
+						.control-group
+							label(class='control-label') Set #1
+							.controls
+								input(class='input-xlarge', name='set1', placeholder='Electro', type='text')
+						.control-group
+							label(class='control-label') Set #2
+							.controls
+								input(class='input-xlarge', name='set2',  placeholder='Punk/Rock', type='text')
+						.control-group
+							label(class='control-label') Set #3
+							.controls
+								input(class='input-xlarge', name='set3', placeholder='80s Kitch', type='text')
+						.control-group
+							label(class='control-label') Time ?
+							.controls
+								input(class='input-mini', value='20', name='delay',type='text') 
+						.control-group
+							.controls
+								button(type='submit', class='btn') Add

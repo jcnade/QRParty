@@ -1,0 +1,31 @@
+html
+	script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+	script(type="text/javascript", src="http://d3js.org/d3.v2.js")
+	script(type="text/javascript", src="/js/cookie.js")
+	link(rel="stylesheet", type="text/css", href="/stylesheets/bootstrap.css")
+	link(rel="stylesheet", type="text/css", href="/stylesheets/bootstrap-responsive.css")
+	body
+		.container
+			.row-fluid
+				.span5
+					legend Start a Party
+					form(class='form-horizontal', action='/make', method='post')
+						.control-group
+							label(class='control-label') PartyTag (a-Z)
+							.controls
+								input(class='input-small', name='partytag', placeholder=' MyParty')
+						.control-group	
+							label(class='control-label') DJ Password						
+							.controls
+								input(class='input-small', name='djpass', type='password')
+						.control-group
+							label(class='control-label') Participants number
+							.controls
+								input(class='input-small', value='10', name='usermax',type='text')
+						.control-group
+							label(class='control-label') how many choice
+							.controls
+								input(class='input-small', value='3', name='choicemax',type='text')
+						.control-group
+							.controls
+								button(type='submit', class='btn') make

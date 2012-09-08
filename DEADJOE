@@ -1,0 +1,34 @@
+
+*** These modified files were found in JOE when it aborted on Sat Sep  8 16:22:29 2012
+*** JOE was aborted because the terminal closed
+
+*** Fichier 'views/make.jade'
+html
+	script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+	script(type="text/javascript", src="http://d3js.org/d3.v2.js")
+	script(type="text/javascript", src="/js/cookie.js")
+	link(rel="stylesheet", type="text/css", href="/stylesheets/bootstrap.css")
+	link(rel="stylesheet", type="text/css", href="/stylesheets/bootstrap-responsive.css")
+	body
+	form
+		legend Start a new party	
+		label PartyTag
+		input(type='texte', placeholder="MyParty")
+		span(class="help-block") Alpha-numerical only, no space or special caracters
+		button(type=submit, class===  )
+*** Fichier '(Sans nom)'
+bqcku
+back
+
+*** Fichier '(Sans nom)'
+qr-server.js
+routes/index.js
+views/make.jade
+views/make.jade
+views/make.jade
+public/js/cookie.js
+public/js/cookie.js
+views/make.jade
+views/make.jade
+views/make.jade
+views/make.jade

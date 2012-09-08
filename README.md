@@ -4,6 +4,11 @@ QRParty
 QR Manager for Event and Party ; Real time vote QR code and Webcam.
 
 
+Server side, you will need a unix server with node.js
+Client side, any device with javascript, HTML5 and a webcam 
+Admin interface and client can run on smartphone Android too.
+
+
 ## Alpha
 
 This version doesn't work yet
@@ -21,13 +26,13 @@ This version doesn't work yet
 ## How to use it
 
 Start the webserver on port 3000
-    node qr-server 
+     node qr-server 
 
 You can build a PartyTag here
-    http://<IP-of-your-server>:3000/admin
+     http://<IP-of-your-server>:3000/admin
 
 And connect some terminal with webcam there
-    http://<IP-of-your-server>:3000/
+     http://<IP-of-your-server>:3000/
 
 
 ## Beerware
