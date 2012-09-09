@@ -30,16 +30,20 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+
 app.get('/',      routes.index);
 app.get('/scan',  routes.scan);
 app.get('/steam', routes.steam);
 app.get('/vote/:userID/:voteNumber',  routes.vote);
 app.get('/encoder/:partytag',  routes.encoder);
+app.get('/qr/:userid/:number',  routes.qr);
 app.get('/make', routes.make);
 app.get('/admin/:partytag', routes.admin);
 app.post('/make', routes.make);
 app.get('/users', user.list);
 
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log("QR-Party server listening on port " + app.get('port'));
 });
+

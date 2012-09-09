@@ -157,9 +157,30 @@ exports.encoder = function(req, res){
     var config  = require("config");
 
 
-	//
- 	// We need redis
-	//
+    // QR managent
+
+    var Encoder = require('qr').Encoder;
+    var encoder = new Encoder;
+
+    /*
+    encoder.on('end', function(png_data){
+                //res.header("Content-Type", "image/png")
+                // png_data is an instance of Buffer
+                //res.send(png_data);
+    });
+    */
+
+    encoder.on('error', function(err){
+                // err is an instance of Error
+                // do something
+                console.log('encoder error: '+ err);
+    });
+
+
+
+    //
+    // We need redis
+    //
 
 	redis = redis.createClient(config.Redis.port, config.Redis.host);
 	
@@ -171,7 +192,8 @@ exports.encoder = function(req, res){
         //
         // Step 1) get list of user 
         //
-
+        
+        
         redis.lrange( 'user/'+req.params.partytag ,0 , -1 , function(err,data){
 		if (err) {   console.log('user/'+req.params.partytag + ' | Cant read on redis.'); }
 		else 
@@ -182,10 +204,19 @@ exports.encoder = function(req, res){
 			var table4print = "<table border=1 cellspacing=4 cellpadding=20>";
 			for (var k in data)
 			{
+			
+			  (function(k){
+	                    encoder.encode('/vote/'+data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'1.png'  );
+	                    encoder.encode('/vote/'+data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'2.png'  );
+	                    encoder.encode('/vote/'+data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'3.png'  );
+	                    //encoder.encode('/vote/'+data[k] +'/'+1 , '/tmp/qr'+data[k]+'.png'  );
+	                    console.log('encoder '+ data[k] );
+                          })(k);
+                          
 			  table4print += "<tr bgcolror=#eeeeee >";
-			  table4print += "<td><img src=/qr/"+ data[k] + '/1></td>';
-			  table4print += "<td><img src=/qr/"+ data[k] + '/2></td>';
-			  table4print += "<td><img src=/qr/"+ data[k] + '/3></td>';
+			  table4print += "<td>Vote A<br><img src=/images/qr" + data[k] + '1.png ></td>';
+			  table4print += "<td>Vote B<br><img src=/images/qr" + data[k] + '2.png ></td>';
+			  table4print += "<td>Vote C<br><img src=/images/qr" + data[k] + '3.png ></td>';
 			  table4print += "</tr>";
 			  
 			}
@@ -194,6 +225,9 @@ exports.encoder = function(req, res){
 		}
 			
      });
+     
+
+
 };
 
 
@@ -209,23 +243,10 @@ exports.encoder = function(req, res){
 exports.qr = function(req, res){
 
 
-
-    var redis   = require("redis");
-    var config  = require("config");
-    var uuid    = require('node-uuid');
+ process.nextTick(function () {
+      
     var Encoder = require('qr').Encoder;
     var encoder = new Encoder;
-
-
-	//
- 	// We need redis
-	//
-
-    redis = redis.createClient(config.Redis.port, config.Redis.host);
-    redis.on("error", function (err) {
-      console.log(" Can't connect to redis " + err);
-    });
-
 
 
 	encoder.on('end', function(png_data){
@@ -250,7 +271,9 @@ exports.qr = function(req, res){
 	              'version': 1
               };
 	                    
-	encoder.encode('hello world' );
+	encoder.encode('/vote/'+req.params.userid +'/'+req.params.vote  );
+
+});
 
 
   //res.render('encoder.jade', { title: 'QR Encoder' });
