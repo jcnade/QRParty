@@ -11,7 +11,8 @@ html
 					hr					
 					a(class='btn', href='/encoder/'+partytag) Print QR list for  #{partytag}
 					legend Add a pool  
-					form(class='form-horizontal', action='/admin', method='post')
+					form(class='form-horizontal', action='/addset', method='post')
+						input(type='hidden', name='partytag', value='#{partytag}')
 						.control-group
 							label(class='control-label') Set #1
 							.controls
@@ -31,3 +32,6 @@ html
 						.control-group
 							.controls
 								button(type='submit', class='btn') Add
+
+					legend Pool List
+	

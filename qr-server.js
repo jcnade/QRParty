@@ -39,8 +39,16 @@ app.get('/encoder/:partytag',  routes.encoder);
 app.get('/qr/:userid/:number',  routes.qr);
 app.get('/make', routes.make);
 app.get('/admin/:partytag', routes.admin);
-app.post('/make', routes.make);
+
+app.get('/json/setlist/:partytag', routes.setlist);
+
+
+app.post('/make',    routes.make);
+app.post('/addset',  routes.addset);
+
+
 app.get('/users', user.list);
+app.get('/vote/:partytag/:userid/:setid', routes.vote);
 
 
 http.createServer(app).listen(app.get('port'), function(){

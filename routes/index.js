@@ -12,6 +12,83 @@ exports.index = function(req, res){
   
 
 
+ /*-----------------------------------------
+  *
+  * One vote !!
+  *
+  *-----------------------------------------
+ */
+  
+exports.vote = function(req, res){
+
+
+    //
+    // we need redis
+    //
+      
+    var redis  = require("redis");
+    var config = require("config");
+    var uuid = require('node-uuid');
+   
+
+    redis = redis.createClient(config.Redis.port, config.Redis.host);
+    redis.on("error", function (err) {
+      console.log(" Can't connect to redis " + err);
+    });
+  
+
+   //
+   // CGI detected
+   //
+   
+   if (req.body.partytag)
+   {
+   
+    
+
+	//  we build a list of user key for this party
+
+    	console.log(req.body.partytag);
+    	console.log(req.body.userid);
+    	console.log(req.body.djsetid);
+
+	//
+     	// Step 1) save the party config info on redis
+        //         the partyTag is the key
+        
+       
+     	redis.incrby( 'set'+djsetid, 1 , function(err){
+       	
+		if (err) {  console.log('Cant save on redis'); }
+     		else {  console.log('+1'); }
+	});
+     
+     
+
+	/*      
+              redis.rpush( 'user/'+req.body.partytag, userID  , function(err){
+              if (err) {   console.log('Cant save on redis'); }
+              });
+     	*/
+     
+     	// 80s Basic style : we jump to admin interface
+     	//res.redirect('/admin/'+ req.body.partytag );   
+   	  res.rend(" ok ");
+
+   }
+   else
+   { 
+	 res.send(" negatif ");
+   }
+
+};
+
+
+
+
+
+
+
 
 
  /*-----------------------------------------
@@ -118,6 +195,134 @@ exports.make = function(req, res){
   }
 
 };
+
+
+
+
+
+
+ /*-----------------------------------------
+  *
+  * JSON API for SET list 
+  *
+  *-----------------------------------------
+ */
+  
+exports.setlist = function(req, res){
+
+
+    //
+    // we need redis
+    //
+      
+    var redis  = require("redis");
+    var config = require("config");
+    var uuid = require('node-uuid');
+   
+
+    redis = redis.createClient(config.Redis.port, config.Redis.host);
+    redis.on("error", function (err) {
+      console.log(" Can't connect to redis " + err);
+    });
+ 
+ 
+ 
+    //
+    // Print the redis queue
+    //
+               
+     redis.lrange( 'set/'+ req.params.partytag, 0, -1 , function(err,data){
+  
+  
+        if (!err) 
+        {
+         res.header("Content-Type", "application/json");
+         res.send(data);
+         console.log("iiiii" + data);
+       }
+       else
+       {
+         console.log("redis eror " + err);
+       }
+            
+     });         
+
+
+};
+
+
+
+
+ /*-----------------------------------------
+  *
+  * Add a DJ set
+  *
+  *-----------------------------------------
+ */
+  
+exports.addset = function(req, res){
+
+
+    //
+    // we need redis
+    //
+      
+    var redis  = require("redis");
+    var config = require("config");
+    var uuid = require('node-uuid');
+   
+
+    redis = redis.createClient(config.Redis.port, config.Redis.host);
+    redis.on("error", function (err) {
+      console.log(" Can't connect to redis " + err);
+    });
+  
+
+   //
+   // CGI detected
+   //
+   
+   if (req.body.partytag)
+   {
+   
+     //  we build a list of user key for this party
+     console.log(req.body.partytag);
+     console.log(req.body.set1);
+     console.log(req.body.set2);
+     console.log(req.body.set3); 
+
+     //
+     // Step 1) save the party config info on redis
+     //         the partyTag is the key
+               
+     redis.rpush( 'set/'+req.body.partytag,  JSON.stringify( { 'partytag' :  req.body.partytag, 
+                                                                'set1name':       req.body.set1,
+                                                                'set2name':       req.body.set2,
+                                                                'set3name':       req.body.set3,
+                                                                
+								'set1id':     uuid.v4(),
+								'set2id':     uuid.v4(),
+								'set3id':     uuid.v4()
+
+                                                                } ) , function(err){
+       if (err) {   console.log('Cant save on redis'); }
+     });
+     
+     
+     
+     // 80s Basic style : we jump to admin interface
+     res.redirect('/admin/'+ req.body.partytag );   
+   
+   }
+   else
+  { 
+ 	 res.rend("error");
+  }
+
+};
+
+
+
 
 
 
