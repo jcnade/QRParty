@@ -31,6 +31,29 @@ app.configure('development', function(){
 });
 
 
+
+//
+// we need redis
+//
+
+/*
+    var redis  = require("redis");
+    var config = require("config");
+    var uuid = require('node-uuid');
+
+    redis = redis.createClient(config.Redis.port, config.Redis.host);
+
+    redis.on("error", function (err) {
+      console.log(" Can't connect to redis " + err);
+    });
+*/
+
+
+//
+// URL
+//
+
+
 app.get('/',      routes.index);
 app.get('/scan',  routes.scan);
 app.get('/steam', routes.steam);
@@ -42,6 +65,8 @@ app.get('/admin/:partytag', routes.admin);
 
 app.get('/json/setlist/:partytag', routes.setlist);
 
+app.get('/publish/:partytag/:setID', 	routes.publish );
+app.get('/delete/:partytag/:setID', 	routes.delete );
 
 app.post('/make',    routes.make);
 app.post('/addset',  routes.addset);
@@ -54,4 +79,21 @@ app.get('/vote/:partytag/:userid/:setid', routes.vote);
 http.createServer(app).listen(app.get('port'), function(){
   console.log("QR-Party server listening on port " + app.get('port'));
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1,6 +1,19 @@
 
 
 
+
+    var redis  = require("redis");
+    var config = require("config");
+    var uuid = require('node-uuid');
+
+    redis = redis.createClient(config.Redis.port, config.Redis.host);
+
+    redis.on("error", function (err) {
+      console.log(" Can't connect to redis " + err);
+    });
+
+                              
+
 /*
  * GET home page.
  */
@@ -22,20 +35,7 @@ exports.index = function(req, res){
 exports.vote = function(req, res){
 
 
-    //
-    // we need redis
-    //
-      
-    var redis  = require("redis");
-    var config = require("config");
-    var uuid = require('node-uuid');
-   
 
-    redis = redis.createClient(config.Redis.port, config.Redis.host);
-    redis.on("error", function (err) {
-      console.log(" Can't connect to redis " + err);
-    });
-  
 
    //
    // CGI detected
@@ -123,19 +123,6 @@ exports.admin = function(req, res){
 exports.make = function(req, res){
 
 
-    //
-    // we need redis
-    //
-      
-    var redis  = require("redis");
-    var config = require("config");
-    var uuid = require('node-uuid');
-   
-
-    redis = redis.createClient(config.Redis.port, config.Redis.host);
-    redis.on("error", function (err) {
-      console.log(" Can't connect to redis " + err);
-    });
   
 
    //
@@ -199,6 +186,67 @@ exports.make = function(req, res){
 
 
 
+ /*-----------------------------------------
+  *
+  * Publish a setlist 
+  *
+  *-----------------------------------------
+ */
+  
+exports.publish = function(req, res){
+
+               
+     redis.lindex( 'set/'+ req.params.partytag, req.params.setID , function(err,data){
+          if (!err) 
+          {
+              // 3 lines for publish, remove, redirect...            
+              redis.lrem( 'set/'+ req.params.partytag, -1, data);
+              redis.set( 'now/'+ req.params.partytag, data);
+              res.redirect('/admin/'+ req.params.partytag );
+          }
+          else
+          {
+            console.log("redis eror " + err);
+          }            
+     });         
+
+};
+
+
+
+ /*-----------------------------------------
+  *
+  * Delete a setlist 
+  *
+  *-----------------------------------------
+ */
+  
+exports.delete = function(req, res){
+
+               
+     redis.lindex( 'set/'+ req.params.partytag, req.params.setID , function(err,data){
+          if (!err) 
+          {
+              res.redirect('/admin/'+ req.params.partytag);
+             
+             console.log(" set:"+ req.params.setID  +' = '+  data);
+          
+	     redis.lrem( 'set/'+ req.params.partytag, -1, data);
+
+	
+	 }
+          else
+          {
+            console.log("redis eror " + err);
+          }            
+     });         
+
+};
+
+
+
+
+
 
 
  /*-----------------------------------------
@@ -211,20 +259,8 @@ exports.make = function(req, res){
 exports.setlist = function(req, res){
 
 
-    //
-    // we need redis
-    //
-      
-    var redis  = require("redis");
-    var config = require("config");
-    var uuid = require('node-uuid');
-   
 
-    redis = redis.createClient(config.Redis.port, config.Redis.host);
-    redis.on("error", function (err) {
-      console.log(" Can't connect to redis " + err);
-    });
- 
+
  
  
     //
@@ -253,6 +289,7 @@ exports.setlist = function(req, res){
 
 
 
+
  /*-----------------------------------------
   *
   * Add a DJ set
@@ -263,19 +300,6 @@ exports.setlist = function(req, res){
 exports.addset = function(req, res){
 
 
-    //
-    // we need redis
-    //
-      
-    var redis  = require("redis");
-    var config = require("config");
-    var uuid = require('node-uuid');
-   
-
-    redis = redis.createClient(config.Redis.port, config.Redis.host);
-    redis.on("error", function (err) {
-      console.log(" Can't connect to redis " + err);
-    });
   
 
    //
