@@ -27,7 +27,7 @@ exports.index = function(req, res){
 
  /*-----------------------------------------
   *
-  * One vote !!
+  * vote 
   *
   *-----------------------------------------
  */
@@ -35,34 +35,119 @@ exports.index = function(req, res){
 exports.vote = function(req, res){
 
 
-
-
    //
    // CGI detected
    //
    
-   if (req.body.partytag)
-   {
-   
-    
+       res.header("Content-Type", "application/json");
+
 
 	//  we build a list of user key for this party
 
-    	console.log(req.body.partytag);
-    	console.log(req.body.userid);
-    	console.log(req.body.djsetid);
+	/*
+    	console.log(req.params.partytag);
+    	console.log(req.params.userID);
+    	console.log(req.params.voteNumber);
+    	*/
 
 	//
      	// Step 1) save the party config info on redis
         //         the partyTag is the key
         
-       
-     	redis.incrby( 'set'+djsetid, 1 , function(err){
-       	
+        //redis.incrby( 'set'+djsetid, 1 , function(err){
+
+
+
+
+        redis.get( 'user/'+req.params.userID , function(err,udata){
+                     	if (err) 
+			{
+				//res.send({ error: true });
+				console.log('non'); 
+			}
+			else 
+			{
+				//res.send({ user: true });
+				if (udata)
+				{
+				  // yes, it's a good cool user )
+				  // now, we can search for the set ID
+				  redis.get( 'now/'+req.params.partytag , function(err,ndata){
+                                      if (!err)
+                                      {
+                                        //
+                                        // Get the SET ID
+                                        //
+
+                                        var j= JSON.parse( ndata );
+                                        var setid = j["set"+req.params.voteNumber+"id"];
+                                      
+                                        //
+                                        // We need to check if the user allready voted
+                                        //
+					console.log('vote/'+ setid +  req.params.userID);
+					
+                                        redis.get( 'vote/'+ setid + req.params.userID , function(err,vdata){
+						// if we are here
+						// user ID is ok
+						if (vdata == "voted")
+						{
+							//
+							// allready voted
+							//
+							//console.log(" allready");
+							res.send( {vote: 'allready' } );
+						}                    
+						else
+						{
+							//
+							// new vote
+							//
+							redis.incrby( 'set/'+setid, 1 );
+							redis.set( 'vote/'+setid+req.params.userID, "voted" );
+							console.log("*** New vote ****");
+							res.send( {vote: 'voted'} ); 
+						}
+						//console.log(' vdata' + vdata);
+
+                                        }); // get vote
+
+                                      }				  
+				  });				  
+				  				  
+				}
+				else
+				{
+				  // not a registred user id
+				  res.send( {vote: false, err: 'unknow user' } );
+				}
+			}
+                     //JSON.parse(data).set2id );
+                     //console.log(udata);
+                     //res.send();
+         });
+  
+ 
+        // 1) get the current LIST
+        /*         
+     	redis.get( 'now/'+req.params.partytag, function(err,data){
 		if (err) {  console.log('Cant save on redis'); }
-     		else {  console.log('+1'); }
-	});
-     
+     		else 
+     		{  
+     		   res.send(data);
+     		   console.log(data);
+     		  // JSON.parse(data).set2id );
+     		  // is the user ID ok ?
+     		  redis.get( 'user/'+req.params.userID , function(err,udata){
+     		     if (err) { console.log('non'); };
+     		     //JSON.parse(data).set2id );
+     		     console.log(udata);
+     		     //res.send();
+     		  });
+     		}
+	}); // end 1)
+	*/
+	     
      
 
 	/*      
@@ -73,13 +158,8 @@ exports.vote = function(req, res){
      
      	// 80s Basic style : we jump to admin interface
      	//res.redirect('/admin/'+ req.body.partytag );   
-   	  res.rend(" ok ");
+   	//  res.rend(" ok ");
 
-   }
-   else
-   { 
-	 res.send(" negatif ");
-   }
 
 };
 
@@ -164,6 +244,8 @@ exports.make = function(req, res){
               var userID =  uuid.v4();
               console.log(userID);
        
+              redis.set( 'user/'+userID, req.body.partytag);
+             
               redis.rpush( 'user/'+req.body.partytag, userID  , function(err){
               if (err) {   console.log('Cant save on redis'); }
               });
@@ -200,7 +282,7 @@ exports.publish = function(req, res){
           if (!err) 
           {
               // 3 lines for publish, remove, redirect...            
-              redis.lrem( 'set/'+ req.params.partytag, -1, data);
+              //redis.lrem( 'set/'+ req.params.partytag, -1, data);
               redis.set( 'now/'+ req.params.partytag, data);
               res.redirect('/admin/'+ req.params.partytag );
           }
@@ -249,6 +331,7 @@ exports.delete = function(req, res){
 
 
 
+
  /*-----------------------------------------
   *
   * JSON API for SET list 
@@ -258,10 +341,6 @@ exports.delete = function(req, res){
   
 exports.setlist = function(req, res){
 
-
-
-
- 
  
     //
     // Print the redis queue
@@ -282,8 +361,40 @@ exports.setlist = function(req, res){
        }
             
      });         
+};
 
 
+
+ /*-----------------------------------------
+  *
+  * JSON API for what under vote NOW 
+  *  
+  *-----------------------------------------
+ */
+  
+
+exports.now = function(req, res){
+ 
+    //
+    // Print the redis queue
+    //
+
+     console.log("ok");               
+     
+     redis.get( 'now/'+ req.params.partytag, function(err,data){
+        if (!err) 
+        {
+
+         console.log("JSON: " + data);
+         res.header("Content-Type", "application/json");
+         res.send( data );
+       }
+       else
+       {
+         console.log("redis eror " + err);
+       }
+            
+     });         
 };
 
 
@@ -360,8 +471,9 @@ exports.addset = function(req, res){
 
 
 exports.scan = function(req, res){
-  res.render('scan', { title: 'Scan' });
+  res.render('scan', { title: 'QR Terninal for '+req.params.partytag });
 };
+
 
 
 exports.steam = function(req, res){
@@ -435,9 +547,9 @@ exports.encoder = function(req, res){
 			{
 			
 			  (function(k){
-	                    encoder.encode('/vote/'+data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'1.png'  );
-	                    encoder.encode('/vote/'+data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'2.png'  );
-	                    encoder.encode('/vote/'+data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'3.png'  );
+	                    encoder.encode(data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'1.png'  );
+	                    encoder.encode(data[k] +'/'+2 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'2.png'  );
+	                    encoder.encode(data[k] +'/'+3 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'3.png'  );
 	                    //encoder.encode('/vote/'+data[k] +'/'+1 , '/tmp/qr'+data[k]+'.png'  );
 	                    console.log('encoder '+ data[k] );
                           })(k);

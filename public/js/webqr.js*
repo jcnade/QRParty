@@ -1,8 +1,5 @@
 // QRCODE reader Copyright 2011 Lazar Laszlo
 // http://www.webqr.com
-//
-// Adaptation by JC for AR party
-
 
 var gCtx = null;
 var gCanvas = null;
@@ -144,59 +141,32 @@ function captureToCanvas() {
 }
 
 function htmlEntities(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;' );
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 
 
 //
-// JC
+// jc: a QR code was readed.. And now ?
 //
 
 function read(a)
 {
-
-
     var html="<br>";
-    /*
     if(a.indexOf("http://") === 0 || a.indexOf("https://") === 0)
         html+="<a target='_blank' href='"+a+"'>"+a+"</a><br>";
     html+="<b>"+htmlEntities(a)+"</b><br><br>";
-    */
-    
     document.getElementById("result").innerHTML=html;
-
-    //lightning();
-    //document.bgColor='red';
-   // document.getElementById(obj).style.backgroundColor = "red";
-
-   // alert(a);    
-
-      
-	d3.json('/vote/test/'+a, function(data) {
-	      
-		if (data.vote == "allready")
-		{
-		  //alert( 'allready' );
-		  //lightning();
-		  
-		}
-		if (data.vote == "voted")
-		{
-		  alert( 'new' );
-		}
-		//alert( data.vote );
-		
-	});
-
-
-	// get
-	//httpGet('/vote/test/123/1');     
-   
-    //alert('ok1');
-   // loop: be reader for another cam   
+  
+    // we do a secret GET on the vote URL
+    d3.json('/vote/123/1', function (xdata){
+     // alert(a);
+    });
+    
+    alert(a);
     setwebcam();
-}	
+}
+	
 
 function isCanvasSupported(){
   var elem = document.createElement('canvas');
@@ -216,6 +186,7 @@ function error(error) {
     gUM=false;
     return;
 }
+
 
 function load()
 {
@@ -295,5 +266,3 @@ function PlaySound(soundObj) {
   var sound = document.getElementById(soundObj);
   sound.Play();
 }
-
-

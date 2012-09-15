@@ -10,6 +10,7 @@ html
 					h2 Admin you party #{partytag}
 					hr					
 					a(class='btn', href='/encoder/'+partytag) Print QR list for  #{partytag}
+					a(class='btn', href='/scan/'+partytag) QR Terminal
 					legend Add a pool  
 					form(class='form-horizontal', action='/addset', method='post')
 						input(type='hidden', name='partytag', value='#{partytag}')
@@ -32,6 +33,22 @@ html
 						.control-group
 							.controls
 								button(type='submit', class='btn') Add
+
+					legend Current pool
+					#there
+					script
+						d3.json('/json/now/test', function (xdata){
+							var there = d3.select("#there");
+							//var now = JSON.parse(xdata);
+							there.append("div").html( 
+							'<table >'+							
+							'<tr valign=top ><td nowrap="nowrap" >'+xdata.set1name+' &nbsp;('+0+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: 33%"></div></div></td></tr>'+
+							'<tr valign=top ><td nowrap="nowrap" >'+xdata.set2name+' &nbsp;('+0+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: 33%"></div></div></td></tr>'+
+							'<tr valign=top ><td nowrap="nowrap" >'+xdata.set3name+' &nbsp;('+0+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: 33%"></div></div></td></tr>'+ 
+							'</table>'
+							);
+ 
+						});
 
 					legend Pool List
 					style
@@ -65,6 +82,8 @@ html
 								})(k);
 							}	
 						});
+					hr
+					
 						
 
 
