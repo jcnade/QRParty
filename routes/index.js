@@ -237,8 +237,8 @@ exports.setlist = function(req, res){
         if (!err) 
         {
          res.header("Content-Type", "application/json");
-         res.send(data);
-         console.log("iiiii" + data);
+         res.send( data );
+         //console.log("iiiii" + data);
        }
        else
        {

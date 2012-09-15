@@ -34,4 +34,52 @@ html
 								button(type='submit', class='btn') Add
 
 					legend Pool List
-	
+					style
+						.setitem
+						{
+							background: #eeeeff;
+							border-radius: 7px;	
+							padding: 12px;
+							margin-top: 5px;
+							size: 14px;
+						}
+					#here
+					script
+							
+						d3.json('/json/setlist/test', function (somedata){
+							var here = d3.select("#here");
+							var t={};
+							//console.log( somedata );
+							for (var k=0 in somedata)
+							{
+								(function(k){
+								
+								t = JSON.parse( somedata[k] ); 
+								//console.log(t.set1name);
+								
+								here.append("div")
+								.attr('id',k)
+								.attr('class','setitem')
+								.html('<table><tr><td><a href=/publish/test/'+k+'  ><button class=btn >Publish</button></a></td><td width=100% ><center><span class="label label-success" >'+t.set1name +'</span> vs <span class="label label-warning" >'+ t.set2name +'</span> vs <span class="label label-info" > '+t.set3name+'</span></center></td><td><span class="icon-remove-sign"></span></td></tr></table>');
+							
+								})(k);
+							}	
+						});
+						
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
