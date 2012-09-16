@@ -12,6 +12,8 @@
       console.log(" Can't connect to redis " + err);
     });
 
+
+
                               
 
 /*
@@ -24,6 +26,18 @@ exports.index = function(req, res){
   };
   
 
+
+
+
+exports.vjay = function(req, res){
+  res.render('vjay', { title: 'Hey DJ!' });
+  };
+
+
+
+    
+    
+    
 
  /*-----------------------------------------
   *
@@ -366,6 +380,7 @@ exports.setlist = function(req, res){
 
 
 
+
  /*-----------------------------------------
   *
   * JSON API for what under vote NOW 
@@ -376,26 +391,100 @@ exports.setlist = function(req, res){
 
 exports.now = function(req, res){
  
-    //
-    // Print the redis queue
-    //
 
-     console.log("ok");               
-     
-     redis.get( 'now/'+ req.params.partytag, function(err,data){
+    var output = {};
+    var total = 0;
+
+    res.header("Content-Type", "application/json");
+       
+    redis.get( 'now/'+ req.params.partytag, function(err,data){
         if (!err) 
         {
-
-         console.log("JSON: " + data);
-         res.header("Content-Type", "application/json");
-         res.send( data );
+		res.send(data);
        }
        else
        {
          console.log("redis eror " + err);
        }
             
-     });         
+    });         
+};
+
+
+
+ /*-----------------------------------------
+  *
+  * JSON API for VOTE result
+  *  
+  *-----------------------------------------
+ */
+  
+
+exports.vstat = function(req, res){
+ 
+
+    var output = {};
+    var total = 0;
+
+    res.header("Content-Type", "application/json");
+       
+    redis.get( 'now/'+ req.params.partytag, function(err,data){
+        if (!err) 
+        {
+
+
+
+         // Vote 1
+         redis.get( 'set/'+JSON.parse(data).set1id , function(err,xdata){
+           
+          if (xdata == null) output['vote1'] = 0;
+          else output['vote1'] = parseInt(xdata);
+                                                                
+	   output['name1'] = JSON.parse(data).set1name
+	   
+	   console.log('x: '+ xdata);
+           total++;
+
+	         // Vote 2
+        	 redis.get( 'set/'+JSON.parse(data).set2id , function(err,ydata){
+
+                          if (ydata == null) output['vote2'] = 0;
+                          else output['vote2'] = parseInt(ydata);
+                                                                           		 
+           		 output['name2'] = JSON.parse(data).set2name
+           		
+			//console.log('y: '+ ydata);
+			total++;
+         
+
+         		// Vote 3
+		         redis.get( 'set/'+JSON.parse(data).set3id , function(err,zdata){
+           			
+                                console.log('z: '+zdata);
+           			if (zdata == null) output['vote3'] = 0;
+                                else output['vote3'] = parseInt(zdata);
+                                
+           			output['name3'] = JSON.parse(data).set3name
+				
+				
+				//console.log('z: '+ zdata);
+           			total++;
+
+				//console.log('fin'+ output.toString() );
+				// finish :)
+				res.send(output);
+
+         		}); // end vote 3
+		}); // end vote 2
+         }); // end vote 1
+
+       }
+       else
+       {
+         console.log("redis eror " + err);
+       }
+            
+    });         
 };
 
 

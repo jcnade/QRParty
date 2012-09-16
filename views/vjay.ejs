@@ -1,10 +1,11 @@
 <html>
 <head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-<title>Web QR</title>
+<title>Vjay QR Party</title>
 <style type="text/css">
 body{
-    width:100%;
+   
+ width:100%;
     text-align:center;
    background-color:black;
 	color: #eeeeee;
@@ -182,51 +183,23 @@ li a{
 
 </style>
 <script type="text/javascript" src="/js/d3.js"></script>
-<script type="text/javascript" src="/js/llqrcode.js"></script>
-<script type="text/javascript" src="/js/plusone.js"></script>
-<script type="text/javascript" src="/js/webqr.js"></script>
 </head>
 
-<body onload="load(); setwebcam(); ">
-<embed src="/js/POS1.WAV" autostart="false" width="0" height="0" id="sound1" enablejavascript="true">
+<body >
 
-<div id=panel ></div>
+<div id=chart ></div>
 <script>
 	//
-	// Show the panel
+	// Show the Chart with D3.js
 	//
 
 	d3.json('/json/vstat/test', function (xdata){
 
-		var panel = d3.select("#panel")
-		
-		panel.html(  '<div class="choice set1" >A<div class=bigtext> '+ xdata.name1+'</div></div>'
-			    +'<div class="choice set2" >B<div class=bigtext> '+ xdata.name2+'</div></div>'
-	   		    +'<div class="choice set3" >C<div class=bigtext> '+ xdata.name3+'</div></div>'
-				);
-
+		var panel = d3.select("#chart")
+		panel.html(  xdata.name1 +'/'+ xdata.name2 +'/'+ xdata.name3);
 		delete panel;
 	});
-
 </script>
 
 
-
-<div id="mainbody">
-
-    <div id="main">
-    <div id="header">
-
-<!--<a href=# id="webcamimg" onclick="setwebcam()" >OpenCam</a>-->
-
-    <div id="outdiv"><p class="helptext2" >Vote is offline</p></div>
-<!--
-    <div id="result"></div>
--->
-
-    <canvas id="qr-canvas" width="800" height="600"></canvas>
-
-</div>
-</body>
-
-</html>
+</body></html>

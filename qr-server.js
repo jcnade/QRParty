@@ -56,6 +56,9 @@ app.configure('development', function(){
 
 app.get('/',      routes.index);
 app.get('/scan/:partytag',  	routes.scan);
+
+app.get('/vjay/:partytag/:style',      routes.vjay);
+
 app.get('/steam', routes.steam);
 
 app.get('/vote/:partytag/:userID/:voteNumber',  routes.vote);
@@ -67,7 +70,7 @@ app.get('/admin/:partytag', routes.admin);
 
 app.get('/json/setlist/:partytag', 	routes.setlist);
 app.get('/json/now/:partytag', 		routes.now);
-
+app.get('/json/vstat/:partytag',        routes.vstat);
 
 app.get('/publish/:partytag/:setID', 	routes.publish );
 app.get('/delete/:partytag/:setID', 	routes.delete );

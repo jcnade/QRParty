@@ -164,7 +164,7 @@ function read(a)
     html+="<b>"+htmlEntities(a)+"</b><br><br>";
     */
     
-    document.getElementById("result").innerHTML= 'Voted '+html ;
+    //document.getElementById("result").innerHTML= 'Voted '+html ;
 
     //lightning();
     //document.bgColor='red';
