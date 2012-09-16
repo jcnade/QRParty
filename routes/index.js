@@ -80,7 +80,8 @@ exports.vote = function(req, res){
                                         //
 
                                         var j= JSON.parse( ndata );
-                                        var setid = j["set"+req.params.voteNumber+"id"];
+                                        var setid   = j["set"+req.params.voteNumber+"id"];
+                                        var setname = j["set"+req.params.voteNumber+"name"]; 
                                       
                                         //
                                         // We need to check if the user allready voted
@@ -96,7 +97,7 @@ exports.vote = function(req, res){
 							// allready voted
 							//
 							//console.log(" allready");
-							res.send( {vote: 'allready' } );
+							res.send( {vote: 'allready', 'setname': setname } );
 						}                    
 						else
 						{
@@ -106,7 +107,7 @@ exports.vote = function(req, res){
 							redis.incrby( 'set/'+setid, 1 );
 							redis.set( 'vote/'+setid+req.params.userID, "voted" );
 							console.log("*** New vote ****");
-							res.send( {vote: 'voted'} ); 
+							res.send( {vote: 'voted', 'setname': setname} ); 
 						}
 						//console.log(' vdata' + vdata);
 
@@ -542,7 +543,12 @@ exports.encoder = function(req, res){
 			//console.log(data);
 			res.header("Content-Type", "text/html");
 			
-			var table4print = "<table border=1 cellspacing=4 cellpadding=20>";
+			//var table4print = "<table border=1 cellspacing=4 cellpadding=0 >";
+			var table4print = "";
+			
+			var pagecutat = 5;
+			var cpt =0;
+			
 			for (var k in data)
 			{
 			
@@ -554,14 +560,43 @@ exports.encoder = function(req, res){
 	                    console.log('encoder '+ data[k] );
                           })(k);
                           
-			  table4print += "<tr bgcolror=#eeeeee >";
-			  table4print += "<td>Vote A<br><img src=/images/qr" + data[k] + '1.png ></td>';
-			  table4print += "<td>Vote B<br><img src=/images/qr" + data[k] + '2.png ></td>';
-			  table4print += "<td>Vote C<br><img src=/images/qr" + data[k] + '3.png ></td>';
+                          
+                          //
+                          // New page after X QR printed
+                          //
+                          cpt++;
+                          if (cpt >pagecutat)
+                          {
+                            table4print += '<div style="page-break-after:always;">';
+                            cpt=0;
+                          }
+                          else
+                          {
+                             table4print += '<div>';
+                          }
+                           
+			  table4print += "<table border=0 cellspacing=0 cellpadding=0 ><tr>";
+			  table4print += "<td valign=bottom align=center ><font size=+1>A</font></td>";
+			  table4print += "<td valign=bottom align=center ><font size=+1>B</font></td>";
+			  table4print += "<td valign=bottom align=center ><font size=+1>C</font></td>";
+			  table4print += "<td valign=bottom align=center ><font size=+1>[parano&iuml;aque]</font></td>";
 			  table4print += "</tr>";
+			    
+			  table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '1.png ></td>';
+			  table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '2.png ></td>';
+			  table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '3.png ></td>';
+			  table4print += "<td valgn=top width=25% height=100 >"+
+			                 "<P><font size=-1 > Vote for your favorite LineUP."+
+			                 "Find a terminal and pressent the appropriate QR code"+
+			                 "in front of the WebCam."+
+			                 "If screen flash green, you have voted."+
+			                 "If screen flash gray, you vote has allready been validate."+
+			                 "</font></P></td>";
+			   
+			  table4print += "</tr></table></div>";
 			  
 			}
-			table4print += "</table>";
+			//table4print += "</table>";
                         res.send(table4print);
 		}
 			
