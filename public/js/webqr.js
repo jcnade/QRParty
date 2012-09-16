@@ -164,7 +164,7 @@ function read(a)
     html+="<b>"+htmlEntities(a)+"</b><br><br>";
     */
     
-    document.getElementById("result").innerHTML=html;
+    document.getElementById("result").innerHTML= 'Voted '+html ;
 
     //lightning();
     //document.bgColor='red';
@@ -172,6 +172,7 @@ function read(a)
 
    // alert(a);    
 
+   // document.getElementById(obj).style.backgroundColor = "red";
       
 	d3.json('/vote/test/'+a, function(data) {
 	      
@@ -179,11 +180,16 @@ function read(a)
 		{
 		  //alert( 'allready' );
 		  //lightning();
+		  d3.select("body").style("background-color", "#444444");
+		  setTimeout(function(){ d3.select("body").style("background-color", "#000000"); }, 1000);
+		  
 		  
 		}
 		if (data.vote == "voted")
 		{
-		  alert( 'new' );
+                  d3.select("body").style("background-color", "darkgreen");
+                  setTimeout(function(){ d3.select("body").style("background-color", "#000000"); }, 3000);
+		  //alert( 'new' );
 		}
 		//alert( data.vote );
 		

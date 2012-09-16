@@ -72,11 +72,12 @@ img{
 	border-width: 2px 2px 2px 2px;
 	border-color: #444444;
 }
+
 #result{
+	background: #333333;
     margin: auto;
     border: solid;
 	border-width: 1px 1px 1px 1px;
-    background: #eeeeee;
 	padding:20px;
     width:280px;
     margin-top: 10px;
@@ -142,11 +143,17 @@ li a{
 <script type="text/javascript" src="/js/llqrcode.js"></script>
 <script type="text/javascript" src="/js/plusone.js"></script>
 <script type="text/javascript" src="/js/webqr.js"></script>
-
 </head>
 
 <body onload="load(); setwebcam(); ">
 <embed src="/js/POS1.WAV" autostart="false" width="0" height="0" id="sound1" enablejavascript="true">
+
+<script>
+
+	// d3.select("body").style("background-color", "red");
+
+</script>
+
 
 <div id="mainbody">
 
