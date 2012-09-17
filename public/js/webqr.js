@@ -181,15 +181,16 @@ function read(a)
 		  //alert( 'allready' );
 		  //lightning();
 		  d3.select("body").style("background-color", "#444444");
-		  setTimeout(function(){ d3.select("body").style("background-color", "#000000"); }, 1000);
+		  setTimeout(function(){ d3.select("body").style("background-color", "#000000"); setwebcam(); }, 2000);
 		  
-		  
+	          //setwebcam();	  
 		}
 		if (data.vote == "voted")
 		{
                   d3.select("body").style("background-color", "darkgreen");
-                  setTimeout(function(){ d3.select("body").style("background-color", "#000000"); }, 3000);
+                  setTimeout(function(){ d3.select("body").style("background-color", "#000000"); setwebcam(); }, 3000);
 		  //alert( 'new' );
+		  //setwebcam();
 		}
 		//alert( data.vote );
 		
@@ -201,7 +202,7 @@ function read(a)
    
     //alert('ok1');
    // loop: be reader for another cam   
-    setwebcam();
+    //setwebcam();
 }	
 
 function isCanvasSupported(){

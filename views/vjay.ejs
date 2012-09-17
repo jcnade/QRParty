@@ -1,6 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<meta http-equiv="refresh" content=3;url=/vjay/test/1">
 <title>Vjay QR Party</title>
 <style type="text/css">
 body{
@@ -155,9 +156,8 @@ li a{
 }
 
 .bigtext
-{	 font-size: 250%;
+{	 font-size: 200%;
 	 text-align: center;
-	 margin-top: -15px;
 }
 
 .set1
@@ -187,18 +187,157 @@ li a{
 
 <body >
 
+
 <div id=chart ></div>
+<table align=center border=0 >
+<tr>
+<td id=v1 width=260 class="set bigtext" ></td>
+<td id=v2 width=260 class="set bigtext" ></td>
+<td id=v3 width=260 class="set bigtext" ></td>
+</tr>
+</table>
+
+
 <script>
 	//
 	// Show the Chart with D3.js
 	//
 
-	d3.json('/json/vstat/test', function (xdata){
+d3.json('/json/vstat/test', function (xdata){
 
-		var panel = d3.select("#chart")
-		panel.html(  xdata.name1 +'/'+ xdata.name2 +'/'+ xdata.name3);
-		delete panel;
+	simplebar("#chart", [ xdata.vote1, xdata.vote2 , xdata.vote3],  [ xdata.name1, xdata.name2 , xdata.name3]);
+
+        d3.select('#v1').text(xdata.name1);
+        d3.select('#v2').text(xdata.name2);
+        d3.select('#v3').text(xdata.name3);
+	
+
+});
+
+
+/*
+setInterval(function(){
+
+	d3.json('/json/vstat/test', function (xdata){
+		//updatebar("#chart", [ xdata.vote1, xdata.vote2 , xdata.vote3],  [ xdata.name1, xdata.name2 , xdata.name3]);
+
 	});
+},3000);
+*/
+
+
+
+function updatebar(tag, dataset)
+{
+/*
+
+	svg.selectAll("rect")
+			   .data(dataset)
+			   .transition()
+		           .duration(750)
+			   .delay(function(d, i) { return i * 10; })
+			   .enter()
+			   .append("rect")
+			   .each(function(d,i){ cpt = i; }) 
+			   .attr("class","d3rect")
+			   .attr("x", function(d, i) {
+			   		return i * (w / dataset.length) ;
+			   })
+			   .attr("y", function(d) {
+			   		return h - (d * ratio) - 15;
+			   })
+			   .attr("width", w / dataset.length - barPadding )
+			   .attr("height", function(d) {
+			   		return d * ratio  ;
+			   })
+			   .attr("fill", function(d,i) {
+					if (i==0){color="#468847"};	
+					if (i==1){color="#F89406"};
+					if (i==2){color="#3A87AD"};
+					return color;
+					//return "rgb(0, 0, " + (d * 10) + ")";
+			   })
+
+*/
+}
+
+
+
+function simplebar(tag, dataset)
+{
+	var w = 800;
+        var h = 600;
+        var barPadding = 1;
+        var cpt = 0;
+
+        var maximumValue = d3.max(dataset);
+        var ratio  = (( h / 2) / maximumValue ) / 0.7;
+
+        var svg = d3.select(tag)
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+	svg.selectAll("rect")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")
+			   .each(function(d,i){ cpt = i; }) 
+			   .attr("class","d3rect")
+			   .attr("x", function(d, i) {
+			   		return i * (w / dataset.length) ;
+			   })
+			   .attr("y", function(d) {
+			   		return h - (d * ratio) - 15;
+			   })
+			   .attr("width", w / dataset.length - barPadding )
+			   .attr("height", function(d) {
+			   		return d * ratio  ;
+			   })
+			   .attr("fill", function(d,i) {
+					if (i==0){color="#468847"};	
+					if (i==1){color="#F89406"};
+					if (i==2){color="#3A87AD"};
+					return color;
+					//return "rgb(0, 0, " + (d * 10) + ")";
+			   });
+
+
+			  //redraw([5,3,4]);
+
+	/*
+	function redraw(newdata)
+	{
+		
+		   svg.selectAll("rect")
+		   .data(newdata)
+		   .transition()
+	           .duration(1000)
+		   .append("rect")
+		   .each(function(d,i){ cpt = i; }) 
+		   .attr("class","d3rect")
+		   .attr("x", function(d, i) {
+		   		return i * (w / dataset.length) ;
+		   })
+		   .attr("y", function(d) {
+		   		return h - (d * ratio) - 15;
+		   })
+		   .attr("width", w / dataset.length - barPadding )
+		   .attr("height", function(d) {
+		   		return d * ratio  ;
+		   })
+		   .attr("fill", function(d,i) {
+				if (i==0){color="#468847"};	
+				if (i==1){color="#F89406"};
+				if (i==2){color="#3A87AD"};
+				return color;
+		   })
+	}
+	*/
+
+
+}
+
 </script>
 
 
