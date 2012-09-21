@@ -173,8 +173,9 @@ function read(a)
    // alert(a);    
 
    // document.getElementById(obj).style.backgroundColor = "red";
-      
-	d3.json('/vote/test/'+a, function(data) {
+
+        //d3.json('/vote/test/'+a, function(data) {
+	d3.json('/vote/'+partytag+'/'+a, function(data) {
 	      
 		if (data.vote == "allready")
 		{

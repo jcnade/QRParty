@@ -196,6 +196,8 @@ li a{
 	// Show the panel
 	//
 
+	var partytag = '<%= partytag %>';
+
 	d3.json('/json/vstat/<%= partytag %>', function (xdata){
 
 		var panel = d3.select("#panel")
