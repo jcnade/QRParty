@@ -9,8 +9,9 @@ html
 				.span5
 					h2 Admin you party #{partytag}
 					hr					
-					a(class='btn', href='/encoder/'+partytag) Print QR list for  #{partytag}
-					a(class='btn', href='/scan/'+partytag) QR Terminal
+					a(class='btn', target='_none',  href='/encoder/'+partytag) Print QR list for  #{partytag}
+					a(class='btn', target='_none',  href='/scan/'+partytag) QR Terminal
+					a(class='btn', target='_none',  href='/vjay/'+partytag+'/1') VJ Chart
 					legend Add a pool  
 					form(class='form-horizontal', action='/addset', method='post')
 						input(type='hidden', name='partytag', value='#{partytag}')
@@ -45,7 +46,7 @@ html
 						function printStat () 
 						{
 						
-						d3.json('/json/vstat/test', function (xdata){
+						d3.json('/json/vstat/#{partytag}', function (xdata){
 							
 
 							// % calculation
@@ -94,7 +95,7 @@ html
 					#here
 					script
 							
-						d3.json('/json/setlist/test', function (somedata){
+						d3.json('/json/setlist/#{partytag}', function (somedata){
 							var here = d3.select("#here");
 							var t={};
 							//console.log( somedata );
@@ -108,7 +109,7 @@ html
 								here.append("div")
 								.attr('id',k)
 								.attr('class','setitem')
-								.html('<table><tr><td><a href=/publish/test/'+k+'  ><button class=btn >Publish</button></a></td><td width=100% ><center><span class="label label-success" >'+t.set1name +'</span> vs <span class="label label-warning" >'+ t.set2name +'</span> vs <span class="label label-info" > '+t.set3name+'</span></center></td><td><a href=/delete/test/'+k+' ><span class="icon-remove-sign"></span></a></td></tr></table>');
+								.html('<table><tr><td><a href=/publish/#{partytag}/'+k+'  ><button class=btn >Publish</button></a></td><td width=100% ><center><span class="label label-success" >'+t.set1name +'</span> vs <span class="label label-warning" >'+ t.set2name +'</span> vs <span class="label label-info" > '+t.set3name+'</span></center></td><td><a href=/delete/#{partytag}/'+k+' ><span class="icon-remove-sign"></span></a></td></tr></table>');
 							
 								})(k);
 							}	

@@ -30,7 +30,11 @@ exports.index = function(req, res){
 
 
 exports.vjay = function(req, res){
-  res.render('vjay', { title: 'Hey DJ!' });
+  res.render('vjay', { 
+  title: 'Hey DJ!',
+  partytag: req.params.partytag
+  
+  });
   };
 
 
@@ -292,6 +296,7 @@ exports.make = function(req, res){
   
 exports.publish = function(req, res){
 
+ //    console.log('publish');
                
      redis.lindex( 'set/'+ req.params.partytag, req.params.setID , function(err,data){
           if (!err) 
@@ -427,16 +432,22 @@ exports.vstat = function(req, res){
     var total = 0;
 
     res.header("Content-Type", "application/json");
+
+
        
     redis.get( 'now/'+ req.params.partytag, function(err,data){
-        if (!err) 
+        if (data) 
         {
+        if (JSON.parse(data).set1name){
 
 
+         // var jsondata = JSON.parse(data);
+         //  if (JSON.parse(data).set1id == "")
 
          // Vote 1
          redis.get( 'set/'+JSON.parse(data).set1id , function(err,xdata){
-           
+        // if (JSON.parse(data).set1name){
+
           if (xdata == null) output['vote1'] = 0;
           else output['vote1'] = parseInt(xdata);
                                                                 
@@ -478,13 +489,15 @@ exports.vstat = function(req, res){
 		}); // end vote 2
          }); // end vote 1
 
+          } // if value exist
        }
        else
        {
-         console.log("redis eror " + err);
+        // console.log("redis eror " + err);
        }
-            
-    });         
+             
+    }); // end get         
+
 };
 
 
@@ -561,7 +574,10 @@ exports.addset = function(req, res){
 
 
 exports.scan = function(req, res){
-  res.render('scan', { title: 'QR Terninal for '+req.params.partytag });
+  res.render('scan', { 
+                      title: 'QR Terninal for '+req.params.partytag, 
+                      partytag: req.params.partytag
+                      });
 };
 
 

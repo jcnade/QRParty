@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-<meta http-equiv="refresh" content=3;url=/vjay/test/1">
+<meta http-equiv="refresh" content=5;url=/vjay/<%= partytag %>/1 >
 <title>Vjay QR Party</title>
 <style type="text/css">
 body{
@@ -203,7 +203,7 @@ li a{
 	// Show the Chart with D3.js
 	//
 
-d3.json('/json/vstat/test', function (xdata){
+d3.json('/json/vstat/<%= partytag %>', function (xdata){
 
 	simplebar("#chart", [ xdata.vote1, xdata.vote2 , xdata.vote3],  [ xdata.name1, xdata.name2 , xdata.name3]);
 
@@ -218,7 +218,7 @@ d3.json('/json/vstat/test', function (xdata){
 /*
 setInterval(function(){
 
-	d3.json('/json/vstat/test', function (xdata){
+	d3.json('/json/vstat/<%= partytag %>', function (xdata){
 		//updatebar("#chart", [ xdata.vote1, xdata.vote2 , xdata.vote3],  [ xdata.name1, xdata.name2 , xdata.name3]);
 
 	});
