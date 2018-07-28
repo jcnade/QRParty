@@ -10,9 +10,13 @@ Client side, any device with javascript, HTML5 and a webcam
 Admin interface and client can run on smartphone Android too.
 
 
-## Alpha
 
-This version doesn't work yet
+## 2018 Updated Edition
+
+* Pug v2
+* Bootstrap v4
+* Jquery v3
+* Express v4
 
 
 ## How it's work 

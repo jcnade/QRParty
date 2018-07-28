@@ -1,0 +1,34 @@
+doctype html
+html
+    head
+        title Starting a new Party with QRParty
+        include head
+    body
+        include logo
+        .container
+            .row-fluid
+                .col-lg-5(class="justify-content-md-center").pt8
+
+                    form(class="'form-horizontal", action="/start/'+pid+'", method='post')
+                        .form-group
+                            .control-group
+                                label(class='control-label') Your Party Name
+                                .controls
+                                    input(class='input-small', id="partyName" name='partytag', placeholder='Your party Name', value="QR Party").form-control
+
+                        .form-group
+                            .control-group
+                                label(class='control-label') How many participants will vote ?
+                                .controls
+                                    input(pattern="[0-9]", value='20', name='usermax', type='number').form-control
+
+                        .form-group
+                            .control-group
+                                label(class='control-label') Instruction
+                                .controls
+                                    textarea(rows="5", maxlength="200", name='description').form-control
+                                        | Find a terminal with a webcam, show up the QR code | and vote the next DJ line up ! When the terminal flash green, your yote is recorded.
+
+                        .control-group
+                            .controls
+                                button(type='submit', class='btn') Save

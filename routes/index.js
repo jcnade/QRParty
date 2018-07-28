@@ -1,30 +1,121 @@
 
 
-    var pug    = require("pug");
-    var redis  = require("redis");
-    var config = require("config");
-    var uuid = require('node-uuid');
-    var Encoder = require('qr').Encoder;
 
-    redis = redis.createClient(config.redis.port, config.redis.host);
-
-    redis.on("error", function (err) {
-      console.log(" Can't connect to redis " + err);
-    });
+var shortid = require('shortid');
+var pug    = require("pug");
+var redis  = require("redis");
+var config = require("config");
+var uuid = require('node-uuid');
+var Encoder = require('qr').Encoder;
 
 
 
-    /*
-     * GET home page.
-     */
+// Starting Redis
+
+redis = redis.createClient(config.redis.port, config.redis.host);
+redis.on("error", function (err) {
+  console.log(" Can't connect to redis " + err);
+});
 
 
-exports.index = function(req, res){
 
-    var html = pug.renderFile('./views/index.pug', {});
-    res.send(html);
- };
-  
+
+
+exports.init = function(req, res, next ) {
+    res.locals.html = "";
+    next()
+};
+
+
+exports.done = function(req, res) {
+    res.send(res.locals.html);
+};
+
+
+exports.index = function(req, res, next){
+
+    // Generate a new uniq ID
+    var options = {
+        'pid' :  shortid.generate()
+    }
+    res.locals.html = pug.renderFile('./views/index.pug', options);
+    next();
+};
+
+
+// Start a new party ID
+exports.partyForm = function(req, res, next){
+
+    var options = {
+        pid : req.params.pid
+    };
+    res.locals.html = pug.renderFile('./views/partyForm.pug', options);
+    next();
+
+};
+
+
+// Start a new party ID
+exports.partyStore = function(req, res){
+
+    if (req.params.pid)  {
+
+        //  we build a list of user key for this party
+        console.log(req.body.partytag);
+        console.log(req.body.djpass);
+        console.log(req.body.usermaxr);
+        console.log(req.body.choicemax);
+
+        //
+        // Step 1) save the party config info on redis
+        //         the partyTag is the key
+
+        redis.set( 'config/'+req.body.partytag, JSON.stringify( { 'partytag' :    req.body.partytag,
+            'djpass':      req.body.djpass,
+            'usermax':     req.body.usermax,
+            'choicemaxx':  req.body.choicemax } ) , function(err){
+            if (err) {   console.log('Cant save on redis'); }
+        });
+
+
+        //
+        // step 2) Generate x uniq user ID
+        //
+
+
+        for (var i = 0 ; i < req.body.usermax ; i++)
+        {
+
+
+            (function(i){
+
+                var userID =  uuid.v4();
+                console.log(userID);
+
+                redis.set( 'user/'+userID, req.body.partytag);
+
+                redis.rpush( 'user/'+req.body.partytag, userID  , function(err){
+                    if (err) {   console.log('Cant save on redis'); }
+                });
+
+            })(i);
+        }
+
+
+        // 80s Basic style : we jump to admin interface
+        res.redirect('/admin/'+ req.body.partytag );
+
+    } else  {
+        //
+        //
+        //
+        var options = {};
+        var html = pug.renderFile('./views/make.pug', options);
+        res.send(html);
+    }
+
+};
+
 
 
 
@@ -211,74 +302,6 @@ exports.admin = function(req, res){
 
 
  
-
- /*-----------------------------------------
-  *
-  * Star a new Party, make a new partyTag
-  *
-  *-----------------------------------------
- */
-  
-exports.make = function(req, res){
-
-
-   if (req.body.partytag)  {
-   
-     //  we build a list of user key for this party
-     console.log(req.body.partytag);
-     console.log(req.body.djpass);
-     console.log(req.body.usermaxr);
-     console.log(req.body.choicemax); 
-
-     //
-     // Step 1) save the party config info on redis
-     //         the partyTag is the key
-               
-     redis.set( 'config/'+req.body.partytag, JSON.stringify( { 'partytag' :    req.body.partytag, 
-                                                               'djpass':      req.body.djpass,
-                                                               'usermax':     req.body.usermax,
-                                                               'choicemaxx':  req.body.choicemax } ) , function(err){
-       if (err) {   console.log('Cant save on redis'); }
-     });
-     
-     
-     //
-     // step 2) Generate x uniq user ID
-     //
-     
-     
-     for (var i = 0 ; i < req.body.usermax ; i++)
-     {
-     
-
-       (function(i){
-       
-              var userID =  uuid.v4();
-              console.log(userID);
-       
-              redis.set( 'user/'+userID, req.body.partytag);
-             
-              redis.rpush( 'user/'+req.body.partytag, userID  , function(err){
-              if (err) {   console.log('Cant save on redis'); }
-              });
-                   
-       })(i);
-     }
-     
-     
-     // 80s Basic style : we jump to admin interface
-     res.redirect('/admin/'+ req.body.partytag );   
-   
-   } else  {
-       //
-       //
-       //
-       var options = {};
-       var html = pug.renderFile('./views/make.pug', options);
-       res.send(html);
-   }
-
-};
 
 
 
@@ -682,11 +705,7 @@ exports.encoder = function(req, res){
                       table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '2.png ></td>';
                       table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '3.png ></td>';
                       table4print += "<td valgn=top width=25% height=100 >"+
-                                     "<P><font size=-1 > Vote for your favorite LineUP."+
-                                     "Find a terminal and pressent the appropriate QR code"+
-                                     "in front of the WebCam."+
-                                     "If screen flash green, you have voted."+
-                                     "If screen flash gray, you vote has allready been validate."+
+                                     "<P><font size=-1 > ici"+
                                      "</font></P></td>";
 
                       table4print += "</tr></table></div>";

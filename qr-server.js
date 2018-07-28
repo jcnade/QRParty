@@ -51,13 +51,27 @@ app.use(function(req, res, next) {
 */
 
 
-//
-// URL
-//
 
 
+
+// First Page for visitors
 app.get('/',
-    routes.index);
+    routes.init,
+    routes.index,
+    routes.done);
+
+
+// Starting a new party (form)
+app.get('/start/:pid',
+    routes.init,
+    routes.partyForm,
+    routes.done);
+
+// Starting a new party (saving data)
+app.post('/start/:pid',
+    routes.init,
+    routes.partyStore,
+    routes.done);
 
 app.get('/scan/:partytag',
     routes.scan);
@@ -80,8 +94,6 @@ app.get('/images/:id',
 app.get('/qr/:userid/:number',
     routes.qr);
 
-app.get('/make',
-    routes.make);
 
 app.get('/admin/:partytag',
     routes.admin);
@@ -100,9 +112,6 @@ app.get('/publish/:partytag/:setID',
 
 app.get('/delete/:partytag/:setID',
     routes.delete );
-
-app.post('/make',
-    routes.make);
 
 app.post('/addset',
     routes.addset);
