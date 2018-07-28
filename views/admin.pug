@@ -1,22 +1,46 @@
 doctype html
 html
     head
-        title Starting a new Party with QRParty
+        title #{name} - QR Party
         include head
     body
+        include logo
 
         .container
-            .row-fluid
-                .col(class="justify-content-md-center")
-                    h2 DJ Console  #{partytag}
+            .row
+                .col
+                    h1 #{name}
 
-                    hr
+            .row
+                .col-sm
+                    a(href="/vjay/" + pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-couch fa-3x")
+                        br
+                        | Real Time Chart
 
-                    a(class='btn', target='_none',  href='/encoder/'+partytag) Print QR list for  #{partytag}
-                    a(class='btn', target='_none',  href='/scan/'+partytag) QR Terminal
-                    a(class='btn', target='_none',  href='/vjay/'+partytag+'/1') VJ Chart
+                .col-sm
+                    a(href="/encoder/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-qrcode fa-3x")
+                        br
+                        | Print QR List
 
-                    legend Add a pool
+                .col-sm
+                    a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-headphones fa-3x")
+                        br
+                        | Print DJ Info
+
+                .col-sm
+                    a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-check-square fa-3x")
+                        br
+                        | Voting Station
+
+
+            .row
+                .col
+
+                    h2 Add a pool
 
                     form(class='form-horizontal', action='/addset', method='post')
                         input(type='hidden', name='partytag', value='#{partytag}')
@@ -39,44 +63,44 @@ html
                         .control-group
                             .controls
                                 button(type='submit', class='btn') Add
-
+            .row
+                .col
                     legend Current pool
 
                     #there
 
                     script(type='text/javascript').
+                        /*
+                            function printStat() {
 
-                        function printStat() {
 
+                                d3.json('/json/vstat/#{pid}', function (xdata) {
 
-                            d3.json('/json/vstat/#{partytag}', function (xdata) {
+                                    var total = parseInt(xdata.vote1) + parseInt(+xdata.vote2) + parseInt(xdata.vote3) ;
+                                    if (total ==0) { total=1; }
 
-                                var total = parseInt(xdata.vote1) + parseInt(+xdata.vote2) + parseInt(xdata.vote3) ;
-                                if (total ==0) { total=1; }
+                                    var size1 = Math.floor( (xdata.vote1 / total) * 100);
+                                    var size2 = Math.floor( (xdata.vote2 / total) * 100);
+                                    var size3 = Math.floor( (xdata.vote3 / total) * 100)
 
-                                var size1 = Math.floor( (xdata.vote1 / total) * 100);
-                                var size2 = Math.floor( (xdata.vote2 / total) * 100);
-                                var size3 = Math.floor( (xdata.vote3 / total) * 100)
+                                    var there = d3.select("#there");
+                                    there.append("div").html(
+                                        '<table >'+
+                                        '<tr valign=top ><td nowrap="nowrap" >'+xdata.name1+' &nbsp;('+xdata.vote1+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size1+'%"></div></div></td></tr>'+
+                                        '<tr valign=top ><td nowrap="nowrap" >'+xdata.name2+' &nbsp;('+xdata.vote2+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size2+'%"></div></div></td></tr>'+
+                                        '<tr valign=top ><td nowrap="nowrap" >'+xdata.name3+' &nbsp;('+xdata.vote3+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size3+'%"></div></div></td></tr>'+
+                                        '</table>'
+                                        )
 
-                                var there = d3.select("#there");
-                                there.append("div").html(
-                                    '<table >'+
-                                    '<tr valign=top ><td nowrap="nowrap" >'+xdata.name1+' &nbsp;('+xdata.vote1+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size1+'%"></div></div></td></tr>'+
-                                    '<tr valign=top ><td nowrap="nowrap" >'+xdata.name2+' &nbsp;('+xdata.vote2+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size2+'%"></div></div></td></tr>'+
-                                    '<tr valign=top ><td nowrap="nowrap" >'+xdata.name3+' &nbsp;('+xdata.vote3+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size3+'%"></div></div></td></tr>'+
-                                    '</table>'
-                                    )
+                                    delete size1;
+                                    delete size2;
+                                    delete size3;
 
-                                delete size1;
-                                delete size2;
-                                delete size3;
+                                    });
 
-                                });
-
-                        }
+                                }
 
                         printStat()
-
 
                     legend Pool List
 
@@ -93,7 +117,7 @@ html
 
                     script(type='text/javascript').
 
-                        d3.json('/json/setlist/#{partytag}', function (somedata){
+                        d3.json('/json/setlist/#{pid}', function (somedata){
                             var here = d3.select("#here");
                             var t={};
                             //console.log( somedata );

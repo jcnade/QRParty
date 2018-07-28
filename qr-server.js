@@ -73,6 +73,14 @@ app.post('/start/:pid',
     routes.partyStore,
     routes.done);
 
+// Event manager Board
+app.get('/admin/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.admin,
+    routes.done);
+
+
 app.get('/scan/:partytag',
     routes.scan);
 
@@ -94,9 +102,6 @@ app.get('/images/:id',
 app.get('/qr/:userid/:number',
     routes.qr);
 
-
-app.get('/admin/:partytag',
-    routes.admin);
 
 app.get('/json/setlist/:partytag',
     routes.setlist);

@@ -1,3 +1,4 @@
+
 QRParty
 =======
 
@@ -11,12 +12,26 @@ Admin interface and client can run on smartphone Android too.
 
 
 
-## 2018 Updated Edition
+## Hardware Requirement 
 
+QR Party is designed to run on hardware easy to find.
+No specific hardware is needed like a barcode.Some old laptop with a webcam are enough.
+
+
+* A screen or projector screen 
+* A terminal with a WebCam who can display an HTML5 page (PC, MAC, Mobile, Raspberry Pi)
+* A printer
+
+
+### 2018 Updated Edition
+
+* Node.js v8
 * Pug v2
 * Bootstrap v4
 * Jquery v3
 * Express v4
+* Font Awesome v5.2
+
 
 
 ## How it's work 

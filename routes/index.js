@@ -2,11 +2,12 @@
 
 
 var shortid = require('shortid');
-var pug    = require("pug");
-var redis  = require("redis");
-var config = require("config");
-var uuid = require('node-uuid');
+var pug     = require("pug");
+var redis   = require("redis");
+var config  = require("config");
+var uuid    = require('node-uuid');
 var Encoder = require('qr').Encoder;
+var merge   = require('merge');
 
 
 
@@ -22,21 +23,51 @@ redis.on("error", function (err) {
 
 
 exports.init = function(req, res, next ) {
-    res.locals.html = "";
+    res.locals.html     = null;
+    res.locals.redirect = null;
     next()
 };
 
 
 exports.done = function(req, res) {
-    res.send(res.locals.html);
+
+    if (res.locals.html) {
+        res.send(res.locals.html);
+    }
+
+    if (res.locals.redirect) {
+        res.redirect(res.locals.redirect);
+    }
+
 };
 
+
+exports.getPartyInfo = function (req,res, next) {
+
+    redis.get( req.params.pid, function(err,string){
+        if (err) {
+            res.status(500).send("500 - Service unavailable (redis)");
+            console.error('partyStore() ERROR with redis.get()', err);
+        } else {
+            res.locals.partyInfo = null;
+            try {
+                res.locals.partyInfo = JSON.parse(string);
+            } catch(e) {
+                res.status(500).send("500 - Service unavailable (JSON.parse)");
+                console.error('partyStore() ERROR with JSON.Parse', e);
+            }
+            console.log(res.locals.partyInfo);
+            next();
+        }
+    });
+
+}
 
 exports.index = function(req, res, next){
 
     // Generate a new uniq ID
     var options = {
-        'pid' :  shortid.generate()
+        'pid' : 'pid'+shortid.generate()
     }
     res.locals.html = pug.renderFile('./views/index.pug', options);
     next();
@@ -47,7 +78,7 @@ exports.index = function(req, res, next){
 exports.partyForm = function(req, res, next){
 
     var options = {
-        pid : req.params.pid
+        pid : req.params.pid // (secret) party ID
     };
     res.locals.html = pug.renderFile('./views/partyForm.pug', options);
     next();
@@ -55,64 +86,27 @@ exports.partyForm = function(req, res, next){
 };
 
 
-// Start a new party ID
-exports.partyStore = function(req, res){
+// Saving Party Info
+exports.partyStore = function(req, res, next){
 
-    if (req.params.pid)  {
-
-        //  we build a list of user key for this party
-        console.log(req.body.partytag);
-        console.log(req.body.djpass);
-        console.log(req.body.usermaxr);
-        console.log(req.body.choicemax);
 
         //
-        // Step 1) save the party config info on redis
-        //         the partyTag is the key
+        // Step 1) save the party config
+        //
 
-        redis.set( 'config/'+req.body.partytag, JSON.stringify( { 'partytag' :    req.body.partytag,
-            'djpass':      req.body.djpass,
-            'usermax':     req.body.usermax,
-            'choicemaxx':  req.body.choicemax } ) , function(err){
-            if (err) {   console.log('Cant save on redis'); }
+        var partyInfo      = merge(req.params, req.body);
+            partyInfo['vid'] =  'vid'+shortid.generate(); // public voting id
+
+        console.log("partyStore()",partyInfo);
+        redis.set( req.params.pid, JSON.stringify(partyInfo), function(err){
+            if (err) {
+                console.error('partyStore() ERROR with redis.set()', err);
+            }
         });
 
-
-        //
-        // step 2) Generate x uniq user ID
-        //
-
-
-        for (var i = 0 ; i < req.body.usermax ; i++)
-        {
-
-
-            (function(i){
-
-                var userID =  uuid.v4();
-                console.log(userID);
-
-                redis.set( 'user/'+userID, req.body.partytag);
-
-                redis.rpush( 'user/'+req.body.partytag, userID  , function(err){
-                    if (err) {   console.log('Cant save on redis'); }
-                });
-
-            })(i);
-        }
-
-
-        // 80s Basic style : we jump to admin interface
-        res.redirect('/admin/'+ req.body.partytag );
-
-    } else  {
-        //
-        //
-        //
-        var options = {};
-        var html = pug.renderFile('./views/make.pug', options);
-        res.send(html);
-    }
+        res.locals.html     = null,
+        res.locals.redirect = '/admin/'+ req.params.pid
+        next();
 
 };
 
@@ -290,10 +284,7 @@ exports.vote = function(req, res){
 
 exports.admin = function(req, res){
 
-    var options = {
-        title: req.params.partytag,
-        partytag : req.params.partytag
-    };
+    var options = merge(req.params,res.locals.partyInfo);
 
     var html = pug.renderFile('./views/admin.pug', options);
     res.send(html);

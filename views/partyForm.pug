@@ -9,12 +9,12 @@ html
             .row-fluid
                 .col-lg-5(class="justify-content-md-center").pt8
 
-                    form(class="'form-horizontal", action="/start/'+pid+'", method='post')
+                    form(class="'form-horizontal", action="/start/"+pid, method='post')
                         .form-group
                             .control-group
                                 label(class='control-label') Your Party Name
                                 .controls
-                                    input(class='input-small', id="partyName" name='partytag', placeholder='Your party Name', value="QR Party").form-control
+                                    input(class='input-small', id="name" name='name', placeholder='Your party Name', value="QR Party").form-control
 
                         .form-group
                             .control-group
