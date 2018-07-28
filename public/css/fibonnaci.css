@@ -1,0 +1,156 @@
+/*
+ * fibonacci.css
+ * (c) 2016 by Jean-Charles Nadé - https://github.com/jcnade/fibonacci.css
+ * MIT License
+ */
+
+.w1  { width: 1px }
+.w2  { width: 2px }
+.w3  { width: 3px }
+.w4  { width: 5px }
+.w5  { width: 8px }
+.w6  { width: 13px }
+.w7  { width: 21px }
+.w8  { width: 34px }
+.w9  { width: 55px }
+.w10 { width: 89px }
+.w11 { width: 144px }
+.w12 { width: 233px }
+.w13 { width: 377px }
+.w14 { width: 610px }
+.w15 { width: 987px }
+.w16 { width: 1597px }
+
+/*  fibonacci height */
+
+.h1  { height: 1px }
+.h2  { height: 2px }
+.h3  { height: 3px }
+.h4  { height: 5px }
+.h5  { height: 8px }
+.h6  { height: 13px }
+.h7  { height: 21px }
+.h8  { height: 34px }
+.h9  { height: 55px }
+.h10 { height: 89px }
+.h11 { height: 144px }
+.h12 { height: 233px }
+.h13 { height: 377px }
+.h14 { height: 610px }
+.h15 { height: 987px }
+.h16 { height: 1597px }
+
+/*  fibonacci margin */
+
+.m1  { margin: 1px }
+.m2  { margin: 2px }
+.m3  { margin: 3px }
+.m4  { margin: 5px }
+.m5  { margin: 8px }
+.m6  { margin: 13px }
+.m7  { margin: 21px }
+.m8  { margin: 34px }
+.m9  { margin: 55px }
+.m10 { margin: 89px }
+
+.mt1  { margin-top: 1px }
+.mt2  { margin-top: 2px }
+.mt3  { margin-top: 3px }
+.mt4  { margin-top: 5px }
+.mt5  { margin-top: 8px }
+.mt6  { margin-top: 13px }
+.mt7  { margin-top: 21px }
+.mt8  { margin-top: 34px }
+.mt9  { margin-top: 55px }
+.mt10 { margin-top: 89px }
+
+.mb1  { margin-bottom: 1px }
+.mb2  { margin-bottom: 2px }
+.mb3  { margin-bottom: 3px }
+.mb4  { margin-bottom: 5px }
+.mb5  { margin-bottom: 8px }
+.mb6  { margin-bottom: 13px }
+.mb7  { margin-bottom: 21px }
+.mb8  { margin-bottom: 34px }
+.mb9  { margin-bottom: 55px }
+.mb10 { margin-bottom: 89px }
+
+.ml1  { margin-left: 1px }
+.ml2  { margin-left: 2px }
+.ml3  { margin-left: 3px }
+.ml4  { margin-left: 5px }
+.ml5  { margin-left: 8px }
+.ml6  { margin-left: 13px }
+.ml7  { margin-left: 21px }
+.ml8  { margin-left: 34px }
+.ml9  { margin-left: 55px }
+.ml10 { margin-left: 89px }
+
+.mr1  { margin-right: 1px }
+.mr2  { margin-right: 2px }
+.mr3  { margin-right: 3px }
+.mr4  { margin-right: 5px }
+.mr5  { margin-right: 8px }
+.mr6  { margin-right: 13px }
+.mr7  { margin-right: 21px }
+.mr8  { margin-right: 34px }
+.mr9  { margin-right: 55px }
+.mr10 { margin-right: 89px }
+
+/*  fibonacci padding */
+
+.p1  { padding: 1px }
+.p2  { padding: 2px }
+.p3  { padding: 3px }
+.p4  { padding: 5px }
+.p5  { padding: 8px }
+.p6  { padding: 13px }
+.p7  { padding: 21px }
+.p8  { padding: 34px }
+.p9  { padding: 55px }
+.p10 { padding: 89px }
+
+.pt1  { padding-top: 1px }
+.pt2  { padding-top: 2px }
+.pt3  { padding-top: 3px }
+.pt4  { padding-top: 5px }
+.pt5  { padding-top: 8px }
+.pt6  { padding-top: 13px }
+.pt7  { padding-top: 21px }
+.pt8  { padding-top: 34px }
+.pt9  { padding-top: 55px }
+.pt10 { padding-top: 89px }
+
+.pb1  { padding-bottom: 1px }
+.pb2  { padding-bottom: 2px }
+.pb3  { padding-bottom: 3px }
+.pb4  { padding-bottom: 5px }
+.pb5  { padding-bottom: 8px }
+.pb6  { padding-bottom: 13px }
+.pb7  { padding-bottom: 21px }
+.pb8  { padding-bottom: 34px }
+.pb9  { padding-bottom: 55px }
+.pb10 { padding-bottom: 89px }
+
+.pl1  { padding-left: 1px }
+.pl2  { padding-left: 2px }
+.pl3  { padding-left: 3px }
+.pl4  { padding-left: 5px }
+.pl5  { padding-left: 8px }
+.pl6  { padding-left: 13px }
+.pl7  { padding-left: 21px }
+.pl8  { padding-left: 34px }
+.pl9  { padding-left: 55px }
+.pl10 { padding-left: 89px }
+
+.pr1  { padding-right: 1px }
+.pr2  { padding-right: 2px }
+.pr3  { padding-right: 3px }
+.pr4  { padding-right: 5px }
+.pr5  { padding-right: 8px }
+.pr6  { padding-right: 13px }
+.pr7  { padding-right: 21px }
+.pr8  { padding-right: 34px }
+.pr9  { padding-right: 55px }
+.pr10 { padding-right: 89px }
+

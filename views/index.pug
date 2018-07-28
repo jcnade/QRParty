@@ -5,16 +5,17 @@ html
         include head
     body
         include logo
-        .container
-            .row-fluid
-                .span5
-
+        .container(class="text-center")
+            .row.pt9.pb8
+                .col(class="justify-content-md-center")
                     a(href="/make" rel="nofollow" class="btn btn-sq-lg btn-success")
-                        i(class="fa fa-music fa-5x")
+                        i(class="fa fa-music fa-3x")
                         br
-                        | Starting
-                        br
-                        | a Party
+                        | Party Start
+
+        .container()
+            .row
+                .col
                     hr
                     ul
                         li
