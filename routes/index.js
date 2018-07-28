@@ -59,7 +59,7 @@ exports.getPartyInfo = function (req,res, next) {
                 res.status(500).send("500 - Service unavailable (JSON.parse)");
                 console.error('partyStore() ERROR with JSON.Parse', e);
             }
-            // console.log(res.locals.partyInfo);
+            console.log(res.locals.partyInfo);
             next();
         }
     });
@@ -513,7 +513,6 @@ var QRCode = require('qrcode');
 
 exports.createQR = function(req, res){
     QRCode.toDataURL(req.params.string || "error", function (err, data) {
-        console.log(data)
         var imagestring = data.split(',');
         var img = new Buffer(imagestring[1], 'base64');
         res.writeHead(200, {
@@ -525,97 +524,45 @@ exports.createQR = function(req, res){
 };
 
 
-
-
-
-        /*-----------------------------------------
-         * QR encoder to print
-         *-----------------------------------------
-        */
-
 exports.encoder = function(req, res){
 
-    console.log("Generating QR code for party", req.params.partytag);
+    console.log("Generating QR code for party for", req.params.pid);
+    console.log("Generating QR code for party usermax is ", res.locals.partyInfo.usermax);
 
-    // QR managent
+    var table4print = "";
+    var pagecutat   = 5;
+    var cpt         = 0;
+    var userId      = 0;
+    var vid         = res.locals.partyInfo.vid;
 
-    var encoder = new Encoder;
+    for (i = 0; i < parseInt(res.locals.partyInfo.usermax) ; i++) {
 
-    /*
-    encoder.on('end', function(png_data){
-                //res.header("Content-Type", "image/png")
-                // png_data is an instance of Buffer
-                //res.send(png_data);
-    });
-    */
+      userId=  'uid'+shortid.generate();
 
-    encoder.on('error', function(err){
-        //
-        // Something go wrong with the encoding
-        //
-        console.log('encoder() ERROR: ', err);
-    });
+      if (cpt >pagecutat) {
+        table4print += '<div style="page-break-after:always;">';
+        cpt=0;
+      } else {
+         table4print += '<div>';
+      }
 
+      table4print += "<hr>";
+      table4print += "<table border=0 cellspacing=0 cellpadding=0 ><tr>";
+      table4print += "<td valign=bottom align=center ><font size=+1>A</font></td>";
+      table4print += "<td valign=bottom align=center ><font size=+1>B</font></td>";
+      table4print += "<td valign=bottom align=center ><font size=+1>C</font></td>";
+      table4print += "<td valign=bottom align=center ><font size=+1>QR Party</font></td>";
+      table4print += "</tr>";
 
-        //
-        // Step 1) get list of user 
-        //
-        
-        redis.lrange( 'user/'+req.params.partytag , 0 , -1 , function(err, data){
-            if (err) {
-                console.log('user/'+req.params.partytag + ' | Cant read on redis.');
-            } else  {
-
-                console.log(data);
-
-                //console.log(data);
-
-                var table4print = "";
-                var pagecutat   = 5;
-                var cpt         = 0;
-
-
-                for (var k in data) {
-
-                          //
-                          // New page after X QR printed
-                          //
-
-                          cpt++;
-
-                          if (cpt >pagecutat)
-                          {
-                            table4print += '<div style="page-break-after:always;">';
-                            cpt=0;
-                          }
-                          else
-                          {
-                             table4print += '<div>';
-                          }
-
-                      table4print += "<table border=0 cellspacing=0 cellpadding=0 ><tr>";
-                      table4print += "<td valign=bottom align=center ><font size=+1>A</font></td>";
-                      table4print += "<td valign=bottom align=center ><font size=+1>B</font></td>";
-                      table4print += "<td valign=bottom align=center ><font size=+1>C</font></td>";
-                      table4print += "<td valign=bottom align=center ><font size=+1>QR Party</font></td>";
-                      table4print += "</tr>";
-
-                      table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '1.png ></td>';
-                      table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '2.png ></td>';
-                      table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '3.png ></td>';
-                      table4print += "<td valgn=top width=25% height=100 >"+
-                                     "<P><font size=-1 > ici"+
-                                     "</font></P></td>";
-
-                      table4print += "</tr></table></div>";
+      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'-'+ userId + '-1.png  ></td>';
+      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'-'+ userId + '-2.png  ></td>';
+      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'-'+ userId + '-3.png  ></td>';
+      table4print += "<td valgn=top width=25% height=100 >"+"<P><font size=-1 >"+res.locals.partyInfo.description+"</font></P></td>";
+      table4print += "</tr></table></div>";
 			  
-			}
+	}
 
-            res.send(table4print);
-		}
-			
-     });
-     
+    res.send(table4print);
 
 
 };

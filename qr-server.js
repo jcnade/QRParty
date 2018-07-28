@@ -80,6 +80,12 @@ app.get('/admin/:pid',
     routes.admin,
     routes.done);
 
+app.get('/encoder/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.encoder,
+    routes.done),
+
 app.post('/queue/:pid',
     routes.init,
     routes.getPartyInfo,
@@ -106,14 +112,16 @@ app.get('/vjay/:pid',
     routes.done);
 
 
-// REST API User's Documentation
+// API Documentation
 app.get('/api/:pid',
     routes.init,
     routes.getPartyInfo,
     routes.showAPI,
     routes.done);
 
-
+// Make a QR code
+app.get('/qr/:string',
+    routes.createQR);
 
 
 //-----------------------------------------
@@ -143,11 +151,7 @@ app.get('/steam',
 app.get('/vote/:partytag/:userID/:voteNumber',
     routes.vote);
 
-app.get('/encoder/:partytag',
-    routes.encoder);
 
-app.get('/images/:id',
-    routes.createQR);
 
 app.get('/qr/:userid/:number',
     routes.qr);
