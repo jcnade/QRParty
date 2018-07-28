@@ -92,6 +92,20 @@ app.get('/queue/:pid',
     routes.showQueue,
     routes.done);
 
+// Dashboard for DJ
+app.get('/dj/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.forDJ,
+    routes.done);
+
+// Dashboard for VJAY Screen
+app.get('/vjay/:pid',
+    routes.init,
+    routes.forVjay,
+    routes.done);
+
+
 // REST API User's Documentation
 app.get('/api/:pid',
     routes.init,
@@ -102,19 +116,26 @@ app.get('/api/:pid',
 
 
 
+//-----------------------------------------
 // REST API Calls - Get The Queue List
+// ----------------------------------------
 app.get('/v1/queue/:pid',
     routes.init,
     routes.getQueue,
     routes.done);
 
+app.get('/v1/now/:pid',
+    routes.init,
+    routes.now,
+    routes.done);
 
+app.get('/v1/set/:setid',
+    routes.init,
+    routes.getSetStat,
+    routes.done);
 
 app.get('/scan/:partytag',
     routes.scan);
-
-app.get('/vjay/:partytag/:style',
-    routes.vjay);
 
 app.get('/steam',
     routes.steam);
@@ -132,11 +153,6 @@ app.get('/qr/:userid/:number',
     routes.qr);
 
 
-app.get('/json/now/:partytag',
-    routes.now);
-
-app.get('/json/vstat/:partytag',
-    routes.vstat);
 
 app.get('/publish/:partytag/:setID',
     routes.publish );

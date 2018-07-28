@@ -1,0 +1,22 @@
+doctype html
+html
+    head
+        title #{name} - QR Party
+        include head
+    body
+
+    h1 graph
+
+    #chart
+
+
+    script(type='text/javascript').
+
+        // Get the current vote for this party-ID
+        $.get('/v1/now/#{pid}', function (data) {
+            graph(data);
+        });
+
+        function graph(data){
+            console.log("graph()",data)
+        }

@@ -1,0 +1,34 @@
+doctype html
+html
+    head
+        title #{name} - QR Party
+        include head
+    body
+        include logo
+
+        .container
+            .row
+                .col
+                    h1 #{name}
+
+            .row
+                .col
+                    include queueForm
+
+            hr
+            .row
+                .col
+                    include queueList
+
+            hr
+            .row
+                .col
+                    include display
+
+
+
+
+
+
+
+

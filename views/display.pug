@@ -1,0 +1,36 @@
+p display
+
+#there
+
+script(type='text/javascript').
+
+        function printStat() {
+
+
+            d3.json('/v1//stat/#{pid}', function (xdata) {
+
+                var total = parseInt(xdata.vote1) + parseInt(+xdata.vote2) + parseInt(xdata.vote3) ;
+                if (total ==0) { total=1; }
+
+                var size1 = Math.floor( (xdata.vote1 / total) * 100);
+                var size2 = Math.floor( (xdata.vote2 / total) * 100);
+                var size3 = Math.floor( (xdata.vote3 / total) * 100)
+
+                var there = d3.select("#there");
+                there.append("div").html(
+                    '<table >'+
+                    '<tr valign=top ><td nowrap="nowrap" >'+xdata.name1+' &nbsp;('+xdata.vote1+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size1+'%"></div></div></td></tr>'+
+                    '<tr valign=top ><td nowrap="nowrap" >'+xdata.name2+' &nbsp;('+xdata.vote2+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size2+'%"></div></div></td></tr>'+
+                    '<tr valign=top ><td nowrap="nowrap" >'+xdata.name3+' &nbsp;('+xdata.vote3+')&nbsp;</td><td width=100% ><div class="progress progress-info"><div class="bar" style="width: '+size3+'%"></div></div></td></tr>'+
+                    '</table>'
+                    )
+
+                delete size1;
+                delete size2;
+                delete size3;
+
+                });
+
+            }
+        //   printStat();
+

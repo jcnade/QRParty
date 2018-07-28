@@ -25,20 +25,23 @@ redis.on("error", function (err) {
 exports.init = function(req, res, next ) {
     res.locals.html     = null;
     res.locals.redirect = null;
+    res.locals.json     = null;
     next()
 };
 
 
 exports.done = function(req, res) {
-
     if (res.locals.html) {
         res.send(res.locals.html);
+    }
+
+    if (res.locals.json) {
+        res.json(res.locals.json);
     }
 
     if (res.locals.redirect) {
         res.redirect(res.locals.redirect);
     }
-
 };
 
 
@@ -111,16 +114,6 @@ exports.partyStore = function(req, res, next){
 };
 
 
-
-
-
-exports.vjay = function(req, res){
-  res.render('vjay', { 
-  title: 'Hey DJ!',
-  partytag: req.params.partytag
-  
-  });
-};
 
 
 
@@ -309,17 +302,32 @@ exports.showAPI = function(req, res, next) {
 };
 
 
- 
+exports.forDJ = function(req, res, next) {
+    var options = merge(req.params, res.locals.partyInfo);
+    res.locals.html = pug.renderFile("./views/forDJ.pug", options );
+    next();
+};
+
+
+exports.forVjay = function(req, res, next) {
+    var options = merge(req.params, res.locals.partyInfo);
+    res.locals.html = pug.renderFile("./views/vjay.pug", options );
+    next();
+};
 
 
 
 
- /*-----------------------------------------
-  *
-  * Publish a setlist 
-  *
-  *-----------------------------------------
- */
+
+
+
+
+/*-----------------------------------------
+ *
+ * Publish a setlist
+ *
+ *-----------------------------------------
+*/
   
 exports.publish = function(req, res){
 
@@ -393,34 +401,28 @@ exports.getQueue = function(req, res){
 
 
 
+// Get the nomber of vote from a DJ-SET
+exports.getSetStat = function(req, res, next) {
+    redis.get( 'now/'+ req.params.setid, function(err,string) {
+        if (!err) {
+            res.locals.html(string);
+        } else {
+            console.error("getSetStat ERROR", err);
+            res.status(500).send("500")
+        }
+    });
+};
 
- /*-----------------------------------------
-  *
-  * JSON API for what under vote NOW 
-  *  
-  *-----------------------------------------
- */
-  
 
-exports.now = function(req, res){
- 
-
-    var output = {};
-    var total = 0;
-
-    res.header("Content-Type", "application/json");
-       
-    redis.get( 'now/'+ req.params.partytag, function(err,data){
-        if (!err) 
-        {
-		res.send(data);
-       }
-       else
-       {
-         console.log("redis eror " + err);
-       }
-            
-    });         
+exports.now = function(req, res, next){
+    redis.get( 'now-'+ req.params.pid, function(err,data){
+        if (!err) {
+    		res.locals.json = data || {};
+    		next();
+        } else {
+            console.log("redis eror " + err);
+        }
+    });
 };
 
 
@@ -433,78 +435,7 @@ exports.now = function(req, res){
  */
   
 
-exports.vstat = function(req, res){
- 
-
-    var output = {};
-    var total = 0;
-
-    res.header("Content-Type", "application/json");
-
-
-       
-    redis.get( 'now/'+ req.params.partytag, function(err,data){
-        if (data) 
-        {
-        if (JSON.parse(data).set1name){
-
-
-         // var jsondata = JSON.parse(data);
-         //  if (JSON.parse(data).set1id == "")
-
-         // Vote 1
-         redis.get( 'set/'+JSON.parse(data).set1id , function(err,xdata){
-        // if (JSON.parse(data).set1name){
-
-          if (xdata == null) output['vote1'] = 0;
-          else output['vote1'] = parseInt(xdata);
-                                                                
-	   output['name1'] = JSON.parse(data).set1name
-	   
-	   console.log('x: '+ xdata);
-           total++;
-
-	         // Vote 2
-        	 redis.get( 'set/'+JSON.parse(data).set2id , function(err,ydata){
-
-                          if (ydata == null) output['vote2'] = 0;
-                          else output['vote2'] = parseInt(ydata);
-                                                                           		 
-           		 output['name2'] = JSON.parse(data).set2name
-           		
-			//console.log('y: '+ ydata);
-			total++;
-         
-
-         		// Vote 3
-		         redis.get( 'set/'+JSON.parse(data).set3id , function(err,zdata){
-           			
-                                console.log('z: '+zdata);
-           			if (zdata == null) output['vote3'] = 0;
-                                else output['vote3'] = parseInt(zdata);
-                                
-           			output['name3'] = JSON.parse(data).set3name
-				
-				
-				//console.log('z: '+ zdata);
-           			total++;
-
-				//console.log('fin'+ output.toString() );
-				// finish :)
-				res.send(output);
-
-         		}); // end vote 3
-		}); // end vote 2
-         }); // end vote 1
-
-          } // if value exist
-       }
-       else
-       {
-        // console.log("redis eror " + err);
-       }
-             
-    }); // end get         
+exports.vstat = function(req, res) {
 
 };
 
