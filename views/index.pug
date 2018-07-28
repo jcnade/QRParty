@@ -1,15 +1,27 @@
 doctype html
 html
     head
-        title
-        link(rel='stylesheet', href='/css/qrparty.css')
+        title QRParty - QR code for DJ
+        include head
     body
-        h1 QR Party
-        p
-        a(href='/make') Start a new QR Party
-        p
-        a(href='/admin/test') Login for DJ
-        p
-        a(href='/vjay/test/1') Vjay Screen #1
-        p
-        a(href='/scan') QR Terminal (HTML5 and webcam)
+        include logo
+        .container
+            .row-fluid
+                .span5
+
+                    a(href="/make" rel="nofollow" class="btn btn-sq-lg btn-success")
+                        i(class="fa fa-music fa-5x")
+                        br
+                        | Starting
+                        br
+                        | a Party
+                    hr
+                    ul
+                        li
+                            a(href='/make') Start a new QR Party
+                        li
+                            a(href='/admin/test') Login for DJ
+                        li
+                            a(href='/vjay/test/1') Vjay Screen #1
+                        li
+                            a(href='/scan') QR Terminal (HTML5 and webcam)

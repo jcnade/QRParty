@@ -24,6 +24,7 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(express.static('public'));
 app.use(function(req, res, next) {
     // Basic Log
     console.log(req.method, req.originalUrl);
