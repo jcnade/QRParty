@@ -1,15 +1,9 @@
 
 /*!
  * Stylus - Stack
- * Copyright(c) 2010 LearnBoost <dev@learnboost.com>
+ * Copyright (c) Automattic <developer.wordpress.com>
  * MIT Licensed
  */
-
-/**
- * Module dependencies.
- */
-
-var Frame = require('./frame');
 
 /**
  * Initialize a new `Stack`.
@@ -88,12 +82,7 @@ Stack.prototype.lookup = function(name){
   do {
     var frame = this.getBlockFrame(block);
     if (frame && (val = frame.lookup(name))) {
-      switch (val.first.nodeName) {
-        case 'ident':
-          return this.lookup(val.first.name) || val;
-        default:
-          return val;
-      }
+      return val;
     }
   } while (block = block.parent);
 };
@@ -114,7 +103,7 @@ Stack.prototype.inspect = function(){
 /**
  * Return stack string formatted as:
  *
- *   at <context> (<filename>:<lineno>)
+ *   at <context> (<filename>:<lineno>:<column>)
  *
  * @return {String}
  * @api private
@@ -130,7 +119,7 @@ Stack.prototype.toString = function(){
   while (len--) {
     block = this[len].block;
     if (node = block.node) {
-      location = '(' + node.filename + ':' + (node.lineno + 1) + ')';
+      location = '(' + node.filename + ':' + (node.lineno + 1) + ':' + node.column + ')';
       switch (node.nodeName) {
         case 'function':
           buf.push('    at ' + node.name + '() ' + location);

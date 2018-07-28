@@ -1,35 +1,33 @@
 
-/**
- * Module dependencies.
- */
 
+
+
+//
+// Loading public modules
+//
 var config = require("config");
+var express         = require('express');
+var bodyParser      = require('body-parser');
+var cookieParser    = require('cookie-parser');
 
-var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , http = require('http')
-  , path = require('path');
 
-var app = express();
+//
+// Loading internal kitchen
+//
+var routes  = require('./routes/index');
+var user    = require('./routes/user');
 
-app.configure(function(){
-  app.set('port', config.service.port);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
-  app.use(express.session());
-  app.use(app.router);
-  app.use(require('stylus').middleware(__dirname + '/public'));
-  app.use(express.static(path.join(__dirname, 'public')));
-});
 
-app.configure('development', function(){
-  app.use(express.errorHandler());
+// Express Config
+var app     = express();
+app.set('view engine', 'pug');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(function(req, res, next) {
+    // Basic Log
+    console.log(req.method, req.originalUrl);
+    next();
 });
 
 
@@ -115,8 +113,8 @@ app.get('/vote/:partytag/:userid/:setid',
     routes.vote);
 
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log("starting", config.service.name, "on port", config.service.port);
+app.listen(config.service.port, function () {
+    console.log("starting", config.service.name, "on port", config.service.port);
 });
 
 

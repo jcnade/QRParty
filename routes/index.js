@@ -1,5 +1,6 @@
 
 
+    var pug    = require("pug");
     var redis  = require("redis");
     var config = require("config");
     var uuid = require('node-uuid');
@@ -19,8 +20,10 @@
 
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Hey DJ!' });
-  };
+
+    var html = pug.renderFile('./views/index.pug', {});
+    res.send(html);
+ };
   
 
 
@@ -32,7 +35,7 @@ exports.vjay = function(req, res){
   partytag: req.params.partytag
   
   });
-  };
+};
 
 
 
@@ -194,14 +197,15 @@ exports.vote = function(req, res){
   *-----------------------------------------
  */
 
- exports.admin = function(req, res){
+exports.admin = function(req, res){
 
-  console.log('Admin ' + req.params.partytag);
+    var options = {
+        title: req.params.partytag,
+        partytag : req.params.partytag
+    };
 
-  var options = { title: req.params.partytag,
-                  partytag : req.params.partytag  };
-
-  res.render('admin.jade', options);
+    var html = pug.renderFile('./views/admin.pug', options);
+    res.send(html);
 
 };
 
@@ -218,14 +222,7 @@ exports.vote = function(req, res){
 exports.make = function(req, res){
 
 
-  
-
-   //
-   // CGI detected
-   //
-   
-   if (req.body.partytag)
-   {
+   if (req.body.partytag)  {
    
      //  we build a list of user key for this party
      console.log(req.body.partytag);
@@ -272,11 +269,14 @@ exports.make = function(req, res){
      // 80s Basic style : we jump to admin interface
      res.redirect('/admin/'+ req.body.partytag );   
    
+   } else  {
+       //
+       //
+       //
+       var options = {};
+       var html = pug.renderFile('./views/make.pug', options);
+       res.send(html);
    }
-   else
-  { 
- 	 res.render('make.jade', { title: 'Start a new QR Party!' });
-  }
 
 };
 
@@ -579,7 +579,7 @@ exports.scan = function(req, res){
 
 
 exports.steam = function(req, res){
-  res.render('steam.jade', { title: 'Scan' });
+  res.render('steam.pug', { title: 'Scan' });
 };
 
 
@@ -750,7 +750,6 @@ exports.qr = function(req, res){
 });
 
 
-  //res.render('encoder.jade', { title: 'QR Encoder' });
 };
 
 
@@ -759,5 +758,5 @@ exports.qr = function(req, res){
 exports.steam = function(req, res){
 
   console.log('' + req.params.userID + ' - ' +req.params.voteNumber);
-  //res.render('steam.jade', { title: 'Scan' });
+
 };
