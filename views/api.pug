@@ -1,0 +1,37 @@
+doctype html
+html
+    head
+        title #{name} - Queue
+        include head
+    body
+        include logo
+
+        .container
+            .row
+                .col
+                    h4 REST API
+                    ul
+                        li
+                            Your party ID is #{pid}
+                        li
+                            a(href="/v1/queue/" + pid) GET /v1/queue/#{pid}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

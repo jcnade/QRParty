@@ -56,7 +56,7 @@ exports.getPartyInfo = function (req,res, next) {
                 res.status(500).send("500 - Service unavailable (JSON.parse)");
                 console.error('partyStore() ERROR with JSON.Parse', e);
             }
-            console.log(res.locals.partyInfo);
+            // console.log(res.locals.partyInfo);
             next();
         }
     });
@@ -275,6 +275,7 @@ exports.vote = function(req, res){
 
 
 
+
  /*-----------------------------------------
   *
   * Admin Deskrop for DJ and manager
@@ -289,6 +290,22 @@ exports.admin = function(req, res){
     var html = pug.renderFile('./views/admin.pug', options);
     res.send(html);
 
+};
+
+
+
+exports.showQueue = function(req, res, next) {
+    var options = merge(req.params, res.locals.partyInfo);
+    res.locals.html = pug.renderFile("./views/queue.pug", options );
+    next();
+};
+
+
+
+exports.showAPI = function(req, res, next) {
+    var options = merge(req.params, res.locals.partyInfo);
+    res.locals.html = pug.renderFile("./views/api.pug", options );
+    next();
 };
 
 
@@ -356,41 +373,22 @@ exports.delete = function(req, res){
 };
 
 
+exports.getQueue = function(req, res){
 
+    var id = 'queue-'+ req.params.pid;
 
-
-
-
-
- /*-----------------------------------------
-  *
-  * JSON API for SET list 
-  *
-  *-----------------------------------------
- */
-  
-exports.setlist = function(req, res){
-
- 
-    //
-    // Print the redis queue
-    //
-               
-     redis.lrange( 'set/'+ req.params.partytag, 0, -1 , function(err,data){
-  
-  
-        if (!err) 
-        {
-         res.header("Content-Type", "application/json");
-         res.send( data );
-         //console.log("iiiii" + data);
-       }
-       else
-       {
-         console.log("redis eror " + err);
-       }
-            
-     });         
+    redis.lrange( id, 0, 100 , function(err,data){
+        if (!err)  {
+            console.log(id);
+            console.log(data);
+            res.header("Content-Type", "application/json");
+            res.send( data );
+            //console.log("iiiii" + data);
+        } else {
+            res.status(500).send("500");
+            console.error("getQueue() ERROR with redis.lrange", err);
+        }
+    });
 };
 
 
@@ -521,51 +519,30 @@ exports.vstat = function(req, res){
   *-----------------------------------------
  */
   
-exports.addset = function(req, res){
+exports.addQueue = function(req, res){
 
+    var id =  'queue-'+req.params.pid;
 
-  
+    var payload = {
+        'pid'      :  req.params.pid,
+        'vid'      :  res.locals.partyInfo.vid || '0',
+        'set1name' :  req.body.set1,
+        'set2name' :  req.body.set2,
+        'set3name' :  req.body.set3,
+        'set1id'   :  'set1'+shortid.generate(),
+        'set2id'   :  'set2'+shortid.generate(),
+        'set3id'   :  'set3'+shortid.generate(),
+    };
 
-   //
-   // CGI detected
-   //
-   
-   if (req.body.partytag)
-   {
-   
-     //  we build a list of user key for this party
-     console.log(req.body.partytag);
-     console.log(req.body.set1);
-     console.log(req.body.set2);
-     console.log(req.body.set3); 
-
-     //
-     // Step 1) save the party config info on redis
-     //         the partyTag is the key
-               
-     redis.rpush( 'set/'+req.body.partytag,  JSON.stringify( { 'partytag' :  req.body.partytag, 
-                                                                'set1name':       req.body.set1,
-                                                                'set2name':       req.body.set2,
-                                                                'set3name':       req.body.set3,
-                                                                
-								'set1id':     uuid.v4(),
-								'set2id':     uuid.v4(),
-								'set3id':     uuid.v4()
-
-                                                                } ) , function(err){
-       if (err) {   console.log('Cant save on redis'); }
-     });
+    redis.rpush( id ,  JSON.stringify(payload), function(err){
+       if (err) {
+           console.error('addQueue() ERROR with redis.rpush', err);
+       } else {
+           console.log("addset() RPUSH",id, JSON.stringify(payload))
+       }
+    });
      
-     
-     
-     // 80s Basic style : we jump to admin interface
-     res.redirect('/admin/'+ req.body.partytag );   
-   
-   }
-   else
-  { 
- 	 res.rend("error");
-  }
+   res.redirect('/admin/'+ req.params.pid);
 
 };
 

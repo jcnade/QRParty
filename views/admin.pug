@@ -13,56 +13,54 @@ html
 
             .row
                 .col-sm
-                    a(href="/vjay/" + pid, rel="nofollow", class="btn btn-sq btn-primary")
-                        i(class="fa fa-couch fa-3x")
-                        br
-                        | Real Time Chart
+                    .w11
+                        a(href="/vjay/" + pid, rel="nofollow", class="btn btn-sq btn-primary")
+                            i(class="fa fa-chart-line fa-3x")
+                            br
+                            | RealTime Chart
 
                 .col-sm
-                    a(href="/encoder/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                        i(class="fa fa-qrcode fa-3x")
-                        br
-                        | Print QR List
+                    .w11
+                        a(href="/encoder/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                            i(class="fa fa-qrcode fa-3x")
+                            br
+                            | Print QR List
 
                 .col-sm
-                    a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                        i(class="fa fa-headphones fa-3x")
-                        br
-                        | Print DJ Info
+                    .w11
+                        a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                            i(class="fa fa-headphones fa-3x")
+                            br
+                            | Print DJ Info
+
+            .row
 
                 .col-sm
-                    a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                        i(class="fa fa-check-square fa-3x")
-                        br
-                        | Voting Station
+                    .w11
+                        a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                            i(class="fa fa-check-square fa-3x")
+                            br
+                            | Voting Station
+
+                .col-sm
+                    .w11
+                        a(href="/queue/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                            i(class="fa fa-list-ol fa-3x")
+                            br
+                            | LineUp Queue
+
+                .col-sm
+                    .w11
+                        a(href="/api/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                            i(class="fa fa-book fa-3x")
+                            br
+                            | REST API DOC
+
 
 
             .row
-                .col
-
-                    h2 Add a pool
-
-                    form(class='form-horizontal', action='/addset', method='post')
-                        input(type='hidden', name='partytag', value='#{partytag}')
-                        .control-group
-                            label(class='control-label') Set #1
-                            .controls
-                                input(class='input-xlarge', name='set1', placeholder='Electro', type='text')
-                        .control-group
-                            label(class='control-label') Set #2
-                            .controls
-                                input(class='input-xlarge', name='set2',  placeholder='Punk/Rock', type='text')
-                        .control-group
-                            label(class='control-label') Set #3
-                            .controls
-                                input(class='input-xlarge', name='set3', placeholder='80s Kitch', type='text')
-                        .control-group
-                            label(class='control-label') Time ?
-                            .controls
-                                input(class='input-mini', value='20', name='delay',type='text')
-                        .control-group
-                            .controls
-                                button(type='submit', class='btn') Add
+                .col.mt8
+                    include queueForm
             .row
                 .col
                     legend Current pool
@@ -102,7 +100,7 @@ html
 
                         printStat()
 
-                    legend Pool List
+                    legend Pool Queue
 
                     style.
                         .setitem {
@@ -137,9 +135,6 @@ html
                             }
                         });
                     hr
-
-
-
 
 
 

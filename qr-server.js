@@ -80,6 +80,35 @@ app.get('/admin/:pid',
     routes.admin,
     routes.done);
 
+app.post('/queue/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.addQueue,
+    routes.done);
+
+app.get('/queue/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.showQueue,
+    routes.done);
+
+// REST API User's Documentation
+app.get('/api/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.showAPI,
+    routes.done);
+
+
+
+
+// REST API Calls - Get The Queue List
+app.get('/v1/queue/:pid',
+    routes.init,
+    routes.getQueue,
+    routes.done);
+
+
 
 app.get('/scan/:partytag',
     routes.scan);
@@ -103,9 +132,6 @@ app.get('/qr/:userid/:number',
     routes.qr);
 
 
-app.get('/json/setlist/:partytag',
-    routes.setlist);
-
 app.get('/json/now/:partytag',
     routes.now);
 
@@ -118,8 +144,6 @@ app.get('/publish/:partytag/:setID',
 app.get('/delete/:partytag/:setID',
     routes.delete );
 
-app.post('/addset',
-    routes.addset);
 
 app.get('/users',
     user.list);

@@ -1,0 +1,26 @@
+h3 Adding a new vote to the queue
+
+p On each form, you can propse different line-up style.
+    | It can be something like "punk" vs "House" vs "70s".
+    | The proposition will be added to the voting queue.
+
+
+form(class='form-horizontal', action='/queue/' + pid, method='post')
+    input(type='hidden', name='partytag', value='#{partytag}')
+    .form-group
+        .controls
+            input(class='input-xlarge', name='set1', placeholder='Choice A', type='text').form-control
+    .form-group
+        .controls
+            input(class='input-xlarge', name='set2',  placeholder='Choice B', type='text').form-control
+    .form-group
+        .controls
+            input(class='input-xlarge', name='set3', placeholder='Choice C', type='text').form-control
+
+    .form-group
+        label(class='control-label') How long participant can vote (minutes) ?
+        .controls
+            input(value='20', pattern="[0-9]", name='delay', type='number').form-control.w10
+    .form-group
+        .controls
+            button(type='submit', class='btn') Add

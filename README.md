@@ -1,7 +1,8 @@
 
-QRParty
-=======
+# QR Party
 
+## Let the dancefloor decide the line up!
+ 
 
 QR Manager for Event and Party ; Real time vote QR code and Webcam.
 
@@ -11,6 +12,13 @@ Client side, any device with javascript, HTML5 and a webcam
 Admin interface and client can run on smartphone Android too.
 
 
+## features
+
+* The servers can host several parties in same times
+* Work with old hardware
+* Can run in localhost without any internet connection
+* mobile friendly
+    
 
 ## Hardware Requirement 
 
