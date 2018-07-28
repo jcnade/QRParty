@@ -1,13 +1,21 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "QR  Party",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node qr-server"
   },
   "dependencies": {
-    "express": "3.0.0rc4",
+    "config": "2.0.0",
     "ejs": "*",
+    "express": "3.0.0rc4",
+    "jade": "1.11.0",
+    "js-yaml": "3.12.0",
+    "node-uuid": "^1.4.8",
+    "pug": "2.0.3",
+    "qr": "0.2.4",
+    "qrcode": "1.2.0",
+    "redis": "2.8.0",
     "stylus": "*"
   }
 }

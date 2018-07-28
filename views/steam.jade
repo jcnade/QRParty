@@ -1,82 +1,82 @@
 h1
-    Remote Webcam using NodeJS, Opera, Web Sockets and HTML5/Canvas
+	Remote Webcam using NodeJS, Opera, Web Sockets and HTML5/Canvas
 video(autoplay=true,id="sourcevid")
 canvas(id="output")
 div(id="log")
 script
-    var log = function(msg) {
-       document.getElementById('log').innerHTML = document.getElementById('log').innerHTML + msg + "<br/>";
-    };
-    var video = document.getElementsByTagName('video')[0],
-        heading = document.getElementsByTagName('h1')[0];
-    if(navigator.getUserMedia) {
-        navigator.getUserMedia('video', successCallback, errorCallback);
+	var log = function(msg) {
+	   document.getElementById('log').innerHTML = document.getElementById('log').innerHTML + msg + "<br/>";
+	};
+	var video = document.getElementsByTagName('video')[0],
+		heading = document.getElementsByTagName('h1')[0];
+	if(navigator.getUserMedia) {
+		navigator.getUserMedia('video', successCallback, errorCallback);
 
-        function successCallback( stream ) {
-            video.src = stream;
-        };
+		function successCallback( stream ) {
+			video.src = stream;
+		};
 
-        function errorCallback( error ) {
-            heading.textContent = "An error occurred: [CODE " + error.code + "]";
-        };
-    } else {
-        heading.textContent = "Native web camera streaming is not supported in this browser!";
-    };
+		function errorCallback( error ) {
+			heading.textContent = "An error occurred: [CODE " + error.code + "]";
+		};
+	} else {
+		heading.textContent = "Native web camera streaming is not supported in this browser!";
+	};
 
-    var back = document.createElement('canvas');
-    var backcontext = back.getContext('2d');
+	var back = document.createElement('canvas');
+	var backcontext = back.getContext('2d');
 
-    var ws;
+	var ws;
 
-    if('WebSocket' in window){
-        connect('ws://192.168.1.3:8080/');
-    } else {
-        log ('web sockets not supported');
-     }
+	if('WebSocket' in window){
+		connect('ws://192.168.1.3:8080/');
+	} else {
+		log ('web sockets not supported');
+	 }
 
-    function connect(host) {
-        ws = new WebSocket(host);
-        ws.onopen = function () {
-            log('connected');
-        };
+	function connect(host) {
+		ws = new WebSocket(host);
+		ws.onopen = function () {
+			log('connected');
+		};
 
-        ws.onclose = function () {
-            log('socket closed');
-        };
+		ws.onclose = function () {
+			log('socket closed');
+		};
 
-        ws.onerror = function (evt) {
-            log('<span style="color: red;">ERROR:</span> ' + evt.data);
-        };
-    };
+		ws.onerror = function (evt) {
+			log('<span style="color: red;">ERROR:</span> ' + evt.data);
+		};
+	};
 
-    function send(msg){
-        if (ws != null) {
-            if(ws.readyState === 1) {
-               ws.send(msg);
-            }
-        } else {
-            log ('not ready yet');
-        }
-    }    
+	function send(msg){
+		if (ws != null) {
+			if(ws.readyState === 1) {
+			   ws.send(msg);
+			}
+		} else {
+			log ('not ready yet');
+		}
+	}
 
-    cw = 120;//240;//video.clientWidth;
-    ch = 200;//400;//video.clientHeight;
-    log('width = ' + ch);
-    back.width = cw;
-    back.height = ch;
-    draw(video, backcontext, cw, ch);
+	cw = 120;//240;//video.clientWidth;
+	ch = 200;//400;//video.clientHeight;
+	log('width = ' + ch);
+	back.width = cw;
+	back.height = ch;
+	draw(video, backcontext, cw, ch);
 
-    function draw(v, bc, w, h) {
+	function draw(v, bc, w, h) {
 
-        // First, draw it into the backing canvas
-        bc.drawImage(v, 0, 0, w, h);
+		// First, draw it into the backing canvas
+		bc.drawImage(v, 0, 0, w, h);
 
-        // Grab the pixel data from the backing canvas
-        var stringData=back.toDataURL();
+		// Grab the pixel data from the backing canvas
+		var stringData=back.toDataURL();
 
-        // send it on the wire
-        send(stringData);
+		// send it on the wire
+		send(stringData);
 
-        // Start over! 10 frames a second = 100milliseconds
-        setTimeout(function(){ draw(v, bc, w, h); });
-    }
+		// Start over! 10 frames a second = 100milliseconds
+		setTimeout(function(){ draw(v, bc, w, h); });
+	}

@@ -1,6 +1,7 @@
 QRParty
 =======
 
+
 QR Manager for Event and Party ; Real time vote QR code and Webcam.
 
 
@@ -21,6 +22,20 @@ This version doesn't work yet
  * They can vote over HTML5/Browser with webcam
  * Real time D3 graph for Vjay, big screen and projector
  * fun !
+
+
+## Requirement 
+
+    apt-get install qrencode
+
+
+## Installation
+
+    git clone git@github.com:jcnade/QRParty.git
+    cd QRParty
+    npm install
+    node qr-server
+    
 
 
 ## How to use it

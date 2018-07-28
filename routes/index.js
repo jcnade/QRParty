@@ -1,12 +1,11 @@
 
 
-
-
     var redis  = require("redis");
     var config = require("config");
     var uuid = require('node-uuid');
+    var Encoder = require('qr').Encoder;
 
-    redis = redis.createClient(config.Redis.port, config.Redis.host);
+    redis = redis.createClient(config.redis.port, config.redis.host);
 
     redis.on("error", function (err) {
       console.log(" Can't connect to redis " + err);
@@ -14,11 +13,9 @@
 
 
 
-                              
-
-/*
- * GET home page.
- */
+    /*
+     * GET home page.
+     */
 
 
 exports.index = function(req, res){
@@ -197,15 +194,14 @@ exports.vote = function(req, res){
   *-----------------------------------------
  */
 
+ exports.admin = function(req, res){
 
-exports.admin = function(req, res){
+  console.log('Admin ' + req.params.partytag);
 
-  console.log('ici ' + req.params.partytag);
+  var options = { title: req.params.partytag,
+                  partytag : req.params.partytag  };
 
-  res.render('admin.jade', { 
-                                title: req.params.partytag,
-                                partytag : req.params.partytag 
-                           });
+  res.render('admin.jade', options);
 
 };
 
@@ -589,24 +585,38 @@ exports.steam = function(req, res){
 
 
 
+/* Generate a QR code image from req.params.string */
 
- /*-----------------------------------------
-  *
-  * QR encoder to print
-  *
-  *-----------------------------------------
- */
+var QRCode = require('qrcode');
+
+exports.createQR = function(req, res){
+    QRCode.toDataURL(req.params.string || "error", function (err, data) {
+        console.log(data)
+        var imagestring = data.split(',');
+        var img = new Buffer(imagestring[1], 'base64');
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': img.length
+        });
+        res.end(img);
+    })
+};
+
+
+
+
+
+        /*-----------------------------------------
+         * QR encoder to print
+         *-----------------------------------------
+        */
 
 exports.encoder = function(req, res){
 
-
-    var redis   = require("redis");
-    var config  = require("config");
-
+    console.log("Generating QR code for party", req.params.partytag);
 
     // QR managent
 
-    var Encoder = require('qr').Encoder;
     var encoder = new Encoder;
 
     /*
@@ -618,58 +628,39 @@ exports.encoder = function(req, res){
     */
 
     encoder.on('error', function(err){
-                // err is an instance of Error
-                // do something
-                console.log('encoder error: '+ err);
+        //
+        // Something go wrong with the encoding
+        //
+        console.log('encoder() ERROR: ', err);
     });
-
-
-
-    //
-    // We need redis
-    //
-
-	redis = redis.createClient(config.Redis.port, config.Redis.host);
-	
-	redis.on("error", function (err) {
-	    console.log(" Can't connect to redis " + err);
-        });
 
 
         //
         // Step 1) get list of user 
         //
         
-        
-        redis.lrange( 'user/'+req.params.partytag ,0 , -1 , function(err,data){
-		if (err) {   console.log('user/'+req.params.partytag + ' | Cant read on redis.'); }
-		else 
-		{
-			//console.log(data);
-			res.header("Content-Type", "text/html");
-			
-			//var table4print = "<table border=1 cellspacing=4 cellpadding=0 >";
-			var table4print = "";
-			
-			var pagecutat = 5;
-			var cpt =0;
-			
-			for (var k in data)
-			{
-			
-			  (function(k){
-	                    encoder.encode(data[k] +'/'+1 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'1.png'  );
-	                    encoder.encode(data[k] +'/'+2 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'2.png'  );
-	                    encoder.encode(data[k] +'/'+3 , '/home/fantomas/qrparty/public/images/qr'+data[k]+'3.png'  );
-	                    //encoder.encode('/vote/'+data[k] +'/'+1 , '/tmp/qr'+data[k]+'.png'  );
-	                    console.log('encoder '+ data[k] );
-                          })(k);
-                          
-                          
+        redis.lrange( 'user/'+req.params.partytag , 0 , -1 , function(err, data){
+            if (err) {
+                console.log('user/'+req.params.partytag + ' | Cant read on redis.');
+            } else  {
+
+                console.log(data);
+
+                //console.log(data);
+
+                var table4print = "";
+                var pagecutat   = 5;
+                var cpt         = 0;
+
+
+                for (var k in data) {
+
                           //
                           // New page after X QR printed
                           //
+
                           cpt++;
+
                           if (cpt >pagecutat)
                           {
                             table4print += '<div style="page-break-after:always;">';
@@ -679,30 +670,30 @@ exports.encoder = function(req, res){
                           {
                              table4print += '<div>';
                           }
-                           
-			  table4print += "<table border=0 cellspacing=0 cellpadding=0 ><tr>";
-			  table4print += "<td valign=bottom align=center ><font size=+1>A</font></td>";
-			  table4print += "<td valign=bottom align=center ><font size=+1>B</font></td>";
-			  table4print += "<td valign=bottom align=center ><font size=+1>C</font></td>";
-			  table4print += "<td valign=bottom align=center ><font size=+1>[parano&iuml;aque]</font></td>";
-			  table4print += "</tr>";
-			    
-			  table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '1.png ></td>';
-			  table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '2.png ></td>';
-			  table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '3.png ></td>';
-			  table4print += "<td valgn=top width=25% height=100 >"+
-			                 "<P><font size=-1 > Vote for your favorite LineUP."+
-			                 "Find a terminal and pressent the appropriate QR code"+
-			                 "in front of the WebCam."+
-			                 "If screen flash green, you have voted."+
-			                 "If screen flash gray, you vote has allready been validate."+
-			                 "</font></P></td>";
-			   
-			  table4print += "</tr></table></div>";
+
+                      table4print += "<table border=0 cellspacing=0 cellpadding=0 ><tr>";
+                      table4print += "<td valign=bottom align=center ><font size=+1>A</font></td>";
+                      table4print += "<td valign=bottom align=center ><font size=+1>B</font></td>";
+                      table4print += "<td valign=bottom align=center ><font size=+1>C</font></td>";
+                      table4print += "<td valign=bottom align=center ><font size=+1>QR Party</font></td>";
+                      table4print += "</tr>";
+
+                      table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '1.png ></td>';
+                      table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '2.png ></td>';
+                      table4print += "<td valgn=top width=25% height=100 align=center><img src=/images/qr" + data[k] + '3.png ></td>';
+                      table4print += "<td valgn=top width=25% height=100 >"+
+                                     "<P><font size=-1 > Vote for your favorite LineUP."+
+                                     "Find a terminal and pressent the appropriate QR code"+
+                                     "in front of the WebCam."+
+                                     "If screen flash green, you have voted."+
+                                     "If screen flash gray, you vote has allready been validate."+
+                                     "</font></P></td>";
+
+                      table4print += "</tr></table></div>";
 			  
 			}
-			//table4print += "</table>";
-                        res.send(table4print);
+
+            res.send(table4print);
 		}
 			
      });
@@ -710,6 +701,8 @@ exports.encoder = function(req, res){
 
 
 };
+
+
 
 
 
