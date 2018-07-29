@@ -147,15 +147,17 @@ app.get('/v1/set/:setid',
     routes.getSetStat,
     routes.done);
 
+app.get('/v1/vote/:partytag/:userID/:voteNumber',
+    routes.vote);
+
+
+
+
 app.get('/scan/:partytag',
     routes.scan);
 
 app.get('/steam',
     routes.steam);
-
-app.get('/vote/:partytag/:userID/:voteNumber',
-    routes.vote);
-
 
 
 app.get('/qr/:userid/:number',

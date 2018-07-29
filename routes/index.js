@@ -565,9 +565,9 @@ exports.encoder = function(req, res){
       table4print += "<td valign=bottom align=center ><font size=+1>QR Party</font></td>";
       table4print += "</tr>";
 
-      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'-'+ userId + '-1.png  ></td>';
-      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'-'+ userId + '-2.png  ></td>';
-      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'-'+ userId + '-3.png  ></td>';
+      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'|'+ userId + '|1|.png  ></td>';
+      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'|'+ userId + '|2|.png  ></td>';
+      table4print += "<td valgn=top width=25% height=100 align=center><img src=/qr/" + vid +'|'+ userId + '|3|.png  ></td>';
       table4print += "<td valgn=top width=25% height=100 >"+"<P><font size=-1 >"+res.locals.partyInfo.description+"</font></P></td>";
       table4print += "</tr></table></div>";
 			  
