@@ -1,8 +1,9 @@
 // QRCODE reader Copyright 2011 Lazar Laszlo
 // http://www.webqr.com
 //
-// Adaptation by JC for AR party
+// Adaptation by JCN for QR party
 
+console.log("Loading webqr.js")
 
 var gCtx = null;
 var gCanvas = null;
@@ -13,12 +14,13 @@ var gUM=false;
 var webkit=false;
 var v=null;
 
-var camhtml='  	<object  id="iembedflash" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="320" height="240"> '+
-  		'<param name="movie" value="camcanvas.swf" />'+
-  		'<param name="quality" value="high" />'+
-		'<param name="allowScriptAccess" value="always" />'+
-  		'<embed  allowScriptAccess="always"  id="embedflash" src="camcanvas.swf" quality="high" width="320" height="240" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" mayscript="true"  />'+
-    '</object>';
+var camhtml='<object  id="iembedflash" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="320" height="240"> '+
+  		    '<param name="movie" value="camcanvas.swf" />'+
+  		    '<param name="quality" value="high" />'+
+		    '<param name="allowScriptAccess" value="always" />'+
+  		    '<embed  allowScriptAccess="always"  id="embedflash" src="camcanvas.swf" quality="high" width="320" height="240" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" mayscript="true"  />'+
+            '</object>';
+
 var imghtml='<div id="qrfile"><canvas id="out-canvas" width="320" height="240"></canvas>'+
     '<div id="imghelp">drag and drop a QRCode here'+
 	'<br>or select a file'+
@@ -243,39 +245,32 @@ function load()
 }
 
 
-function setwebcam()
-{
-	
-    //document.getElementById("result").innerHTML="- scanning -";
 
-    if(stype==1)
-    {
+function setwebcam() {
+	
+    if (stype==1) {
         setTimeout(captureToCanvas, 500);    
         return;
     }
+
     var n=navigator;
-    if(n.getUserMedia)
-    {
+
+    if(n.getUserMedia) {
         document.getElementById("outdiv").innerHTML = vidhtml;
         v=document.getElementById("v");
         n.getUserMedia({video: true, audio: false}, success, error);
     }
     else
-    if(n.webkitGetUserMedia)
-    {
+    if(n.webkitGetUserMedia) {
         document.getElementById("outdiv").innerHTML = vidhtml;
         v=document.getElementById("v");
         webkit=true;
         n.webkitGetUserMedia({video: true, audio: false}, success, error);
-    }
-    else
-    if(n.mozGetUserMedia)
-    {
+    } else if(n.mozGetUserMedia) {
         document.getElementById("outdiv").innerHTML = vidhtml;
         v=document.getElementById("v");
         n.mozGetUserMedia({video: true, audio: false}, success, error);
-    }
-    else
+    } else
     document.getElementById("outdiv").innerHTML = camhtml;
     //document.getElementById("qrimg").src="qrimg2.png";
     //document.getElementById("webcamimg").src="webcam.png";

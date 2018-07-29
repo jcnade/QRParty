@@ -316,6 +316,13 @@ exports.forVjay = function(req, res, next) {
 };
 
 
+exports.vote = function(req, res, next) {
+    var options = merge(req.params, res.locals.partyInfo);
+    res.locals.html = pug.renderFile("./views/vote.pug", options );
+    next();
+};
+
+
 
 
 
@@ -530,8 +537,9 @@ exports.encoder = function(req, res){
     console.log("Generating QR code for party usermax is ", res.locals.partyInfo.usermax);
 
     var table4print = "";
-    var pagecutat   = 5;
-    var cpt         = 0;
+    var pagecutat   = 4;
+    var cpt         = pagecutat;
+    var pageID      = 1;
     var userId      = 0;
     var vid         = res.locals.partyInfo.vid;
 
@@ -539,11 +547,14 @@ exports.encoder = function(req, res){
 
       userId=  'uid'+shortid.generate();
 
-      if (cpt >pagecutat) {
-        table4print += '<div style="page-break-after:always;">';
+      if (cpt >= pagecutat ) {
+        table4print += '<div style="page-break-after:always;"></div>';
+        table4print += 'Page '+pageID;
+        pageID++;
         cpt=0;
       } else {
          table4print += '<div>';
+         cpt++;
       }
 
       table4print += "<hr>";

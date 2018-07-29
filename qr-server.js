@@ -84,7 +84,7 @@ app.get('/encoder/:pid',
     routes.init,
     routes.getPartyInfo,
     routes.encoder,
-    routes.done),
+    routes.done);
 
 app.post('/queue/:pid',
     routes.init,
@@ -111,7 +111,6 @@ app.get('/vjay/:pid',
     routes.forVjay,
     routes.done);
 
-
 // API Documentation
 app.get('/api/:pid',
     routes.init,
@@ -123,6 +122,12 @@ app.get('/api/:pid',
 app.get('/qr/:string',
     routes.createQR);
 
+// Dashboard for VJAY Screen
+app.get('/vote/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.vote,
+    routes.done);
 
 //-----------------------------------------
 // REST API Calls - Get The Queue List

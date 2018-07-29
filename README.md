@@ -39,6 +39,7 @@ No specific hardware is needed like a barcode.Some old laptop with a webcam are 
 * Jquery v3
 * Express v4
 * Font Awesome v5.2
+* IntaScan v1
 
 
 
