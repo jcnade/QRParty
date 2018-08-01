@@ -23,9 +23,13 @@ redis.on("error", function (err) {
 
 
 exports.init = function(req, res, next ) {
-    res.locals.html     = null;
-    res.locals.redirect = null;
-    res.locals.json     = null;
+    res.locals.vid        = null; // Public Voting ID
+    res.locals.pid        = null; // Private Party ID
+    res.locals.html       = null;
+    res.locals.redirect   = null;
+    res.locals.json       = null;
+    res.locals.partyInfo  = null;
+    res.locals.votingInfo = null;
     next()
 };
 
@@ -59,12 +63,42 @@ exports.getPartyInfo = function (req,res, next) {
                 res.status(500).send("500 - Service unavailable (JSON.parse)");
                 console.error('partyStore() ERROR with JSON.Parse', e);
             }
+            if (res.locals.partyInfo && res.locals.partyInfo.vid) {
+                res.locals.vid = res.locals.partyInfo.vid;
+            }
+            console.log("------------------");
+            console.log("partyInfo");
             console.log(res.locals.partyInfo);
+            console.log("------------------");
+
             next();
         }
     });
 
-}
+};
+
+
+exports.getVotingInfo = function (req,res, next) {
+
+    var vid = res.locals.vid || req.params.vid || res.locals.partyInfo.vid;
+
+    redis.get( 'now-'+vid , function(err,string){
+        if (err) {
+            res.status(500).send("500 - Service unavailable (redis)");
+            console.error('getVotingInfo() ERROR with redis.get()', err);
+        } else {
+            res.locals.votingInfo = null;
+            try {
+                res.locals.votingInfo = JSON.parse(string);
+            } catch(e) {
+                res.status(500).send("500 - Service unavailable (JSON.parse)");
+                console.error('partyStore() ERROR with JSON.Parse', e);
+            }
+            next();
+        }
+    });
+};
+
 
 exports.index = function(req, res, next){
 
@@ -92,111 +126,84 @@ exports.partyForm = function(req, res, next){
 // Saving Party Info
 exports.partyStore = function(req, res, next){
 
+        var partyInfo         = merge(req.params, req.body);
+            partyInfo['vid']  = 'vid'+shortid.generate(); // public voting id
 
-        //
-        // Step 1) save the party config
-        //
-
-        var partyInfo      = merge(req.params, req.body);
-            partyInfo['vid'] =  'vid'+shortid.generate(); // public voting id
-
-        console.log("partyStore()",partyInfo);
         redis.set( req.params.pid, JSON.stringify(partyInfo), function(err){
             if (err) {
+                res.status(500).send("500 - Service offline (redis)");
                 console.error('partyStore() ERROR with redis.set()', err);
+            } else {
+                res.locals.vid       = partyInfo['vid'];
+                res.locals.partyInfo = partyInfo;
+                res.locals.html      = null;
+                res.locals.redirect  = '/admin/'+ req.params.pid;
+                next();
             }
         });
+};
 
-        res.locals.html     = null,
-        res.locals.redirect = '/admin/'+ req.params.pid
-        next();
 
+// Saving Public Voting Info
+exports.setVotingInfo = function(req, res, next){
+
+    var votingInfo         = res.locals.partyInfo;
+        votingInfo['show'] = 'welcome';
+
+    redis.set( 'now-'+req.params.vid, JSON.stringify(votingInfo), function(err){
+        if (err) {
+            res.status(500).send("500 - Service offline (redis)");
+            console.error('displayInit() ERROR with redis.set()', err);
+        } else {
+            next();
+        }
+    });
 };
 
 
 
 
 
-    
-    
-    
 
- /*-----------------------------------------
-  *
-  * vote 
-  *
-  *-----------------------------------------
- */
+
+
+
+
+
+
+/*-----------------------------------------
+ *
+ * vote
+ *
+ *-----------------------------------------
+*/
+
   
 exports.vote = function(req, res){
 
+    res.header("Content-Type", "application/json");
 
-   //
-   // CGI detected
-   //
-   
-       res.header("Content-Type", "application/json");
-
-
-	//  we build a list of user key for this party
-
-	/*
-    	console.log(req.params.partytag);
-    	console.log(req.params.userID);
-    	console.log(req.params.voteNumber);
-    	*/
-
-	//
-     	// Step 1) save the party config info on redis
-        //         the partyTag is the key
-        
-        //redis.incrby( 'set'+djsetid, 1 , function(err){
-
-
-
-
-        redis.get( 'user/'+req.params.userID , function(err,udata){
-                     	if (err) 
-			{
-				//res.send({ error: true });
-				console.log('non'); 
-			}
-			else 
-			{
-				//res.send({ user: true });
-				if (udata)
-				{
-				  // yes, it's a good cool user )
-				  // now, we can search for the set ID
-				  redis.get( 'now/'+req.params.partytag , function(err,ndata){
-                                      if (!err)
-                                      {
-                                        //
-                                        // Get the SET ID
-                                        //
-
-                                        var j= JSON.parse( ndata );
-                                        var setid   = j["set"+req.params.voteNumber+"id"];
-                                        var setname = j["set"+req.params.voteNumber+"name"]; 
-                                      
-                                        //
-                                        // We need to check if the user allready voted
-                                        //
-					console.log('vote/'+ setid +  req.params.userID);
+    redis.get( 'now-'+req.params.vid , function(err,ndata){
+        if (!err) {
+            // Get the SET ID
+                var j= JSON.parse( ndata );
+                var setid   = j["set"+req.params.voteNumber+"id"];
+                var setname = j["set"+req.params.voteNumber+"name"];
+                //
+                // We need to check if the user allready voted
+                //
+                console.log('vote/'+ setid +  req.params.userID);
 					
-                                        redis.get( 'vote/'+ setid + req.params.userID , function(err,vdata){
+                redis.get( 'vote/'+ setid + req.params.userID , function(err,vdata){
 						// if we are here
 						// user ID is ok
-						if (vdata == "voted")
-						{
+						if (vdata == "voted") {
 							//
 							// allready voted
 							//
 							//console.log(" allready");
 							res.send( {vote: 'allready', 'setname': setname } );
-						}                    
-						else
-						{
+						} else {
 							//
 							// new vote
 							//
@@ -212,51 +219,6 @@ exports.vote = function(req, res){
                                       }				  
 				  });				  
 				  				  
-				}
-				else
-				{
-				  // not a registred user id
-				  res.send( {vote: false, err: 'unknow user' } );
-				}
-			}
-                     //JSON.parse(data).set2id );
-                     //console.log(udata);
-                     //res.send();
-         });
-  
- 
-        // 1) get the current LIST
-        /*         
-     	redis.get( 'now/'+req.params.partytag, function(err,data){
-		if (err) {  console.log('Cant save on redis'); }
-     		else 
-     		{  
-     		   res.send(data);
-     		   console.log(data);
-     		  // JSON.parse(data).set2id );
-     		  // is the user ID ok ?
-     		  redis.get( 'user/'+req.params.userID , function(err,udata){
-     		     if (err) { console.log('non'); };
-     		     //JSON.parse(data).set2id );
-     		     console.log(udata);
-     		     //res.send();
-     		  });
-     		}
-	}); // end 1)
-	*/
-	     
-     
-
-	/*      
-              redis.rpush( 'user/'+req.body.partytag, userID  , function(err){
-              if (err) {   console.log('Cant save on redis'); }
-              });
-     	*/
-     
-     	// 80s Basic style : we jump to admin interface
-     	//res.redirect('/admin/'+ req.body.partytag );   
-   	//  res.rend(" ok ");
-
 
 };
 
@@ -310,14 +272,14 @@ exports.forDJ = function(req, res, next) {
 
 
 exports.forVjay = function(req, res, next) {
-    var options = merge(req.params, res.locals.partyInfo);
+    var options = merge(req.params, res.locals.votingInfo);
     res.locals.html = pug.renderFile("./views/vjay.pug", options );
     next();
 };
 
 
 exports.vote = function(req, res, next) {
-    var options = merge(req.params, res.locals.partyInfo);
+    var options = merge(req.params, res.locals.votingInfo);
     res.locals.html = pug.renderFile("./views/vote.pug", options );
     next();
 };
@@ -329,28 +291,24 @@ exports.vote = function(req, res, next) {
 
 
 
-/*-----------------------------------------
- *
- * Publish a setlist
- *
- *-----------------------------------------
-*/
-  
 exports.publish = function(req, res){
 
- //    console.log('publish');
-               
-     redis.lindex( 'set/'+ req.params.partytag, req.params.setID , function(err,data){
-          if (!err) 
-          {
-              // 3 lines for publish, remove, redirect...            
-              //redis.lrem( 'set/'+ req.params.partytag, -1, data);
-              redis.set( 'now/'+ req.params.partytag, data);
-              res.redirect('/admin/'+ req.params.partytag );
-          }
-          else
-          {
-            console.log("redis eror " + err);
+     redis.lindex( 'queue-'+ req.params.pid, req.params.setID , function(err,data){
+          if (!err)  {
+
+              // Moving the element on the queue to the current
+              redis.set( 'now-'+ req.params.pid, data);
+
+              // removing the element
+              redis.lrem( 'queue-'+ req.params.pid, req.params.setID, data);
+
+              res.redirect('/dj/'+ req.params.pid);
+          } else {
+              //
+              // Didn't work :/
+              //
+              res.status(500).send("500 - can not publish");
+              console.log("publish() ERROR with redis - ", err);
           }            
      });         
 
@@ -422,7 +380,7 @@ exports.getSetStat = function(req, res, next) {
 
 
 exports.now = function(req, res, next){
-    redis.get( 'now-'+ req.params.pid, function(err,data){
+    redis.get( 'now-'+ req.params.vid, function(err,data){
         if (!err) {
     		res.locals.json = data || {};
     		next();
@@ -475,12 +433,14 @@ exports.addQueue = function(req, res){
     redis.rpush( id ,  JSON.stringify(payload), function(err){
        if (err) {
            console.error('addQueue() ERROR with redis.rpush', err);
+           res.status(500).send("500 - Can not save");
        } else {
            console.log("addset() RPUSH",id, JSON.stringify(payload))
+           res.redirect('/admin/'+ req.params.pid);
+
        }
     });
      
-   res.redirect('/admin/'+ req.params.pid);
 
 };
 

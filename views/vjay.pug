@@ -2,21 +2,109 @@ doctype html
 html
     head
         title #{name} - QR Party
-        include head
+        // include head
     body
 
-    h1 graph
+        style.
 
-    #chart
+            body {
+            }
+
+            html {
+
+            }
+
+            #welcome {
+                position: fixed;
+                top: 0;
+                left: 0;
+                min-width: 100%;
+                min-height: 100%;
+            }
+
+            #display {
+            }
+
+            .bigfont {
+                font-size: 300%;
+                color: #eeeeee;
+            }
+
+            .center {
+                position: fixed;
+                top: 50%;
+                /* left: 50%; */
+                margin-top: 100px;
+                /* margin-left: -100px; */
+                text-align: center;
+                width: 100%;
+            }
+
+            .hide {
+                display : none;
+            }
+
+            .night-hotel {
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+                /* padding: 20px; */
+                border: none;
+                font: normal 60px/1 "Monoton", Helvetica, sans-serif;
+                color: rgba(255, 255, 255, 1);
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                text-shadow: 0 0 10px rgb(255, 255, 255), 0 0 20px rgb(255, 255, 255), 0 0 30px rgb(255, 255, 255), 0 0 40px rgb(255, 17, 119), 0 0 70px rgb(255, 17, 119), 0 0 80px rgb(255, 17, 119), 0 0 100px rgb(255, 17, 119), 0 0 150px rgb(255, 17, 119);
+                -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+                -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+                -o-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+                transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+            }
+
+            .night-hotel:hover {
+                text-shadow: 0 0 5px rgb(255, 255, 255), 0 0 10px rgb(255, 255, 255), 0 0 15px rgb(255, 255, 255), 0 0 20px rgb(255, 17, 119), 0 0 35px rgb(255, 17, 119), 0 0 40px rgb(255, 17, 119), 0 0 50px rgb(255, 17, 119), 0 0 75px rgb(255, 17, 119);
+            }
+
+
+        #welcome
+            img(src='/img/start.jpg', width="100%")
+            .center
+                .night-hotel #{name}
+
+
+        #display.hide
+            #proposition1.bigfont
+            #proposition2.bigfont
+            #proposition3.bigfont
+
+
+#chart
 
 
     script(type='text/javascript').
 
         // Get the current vote for this party-ID
-        $.get('/v1/now/#{pid}', function (data) {
-            graph(data);
+        $.get('/v1/now/#{vid}', function (data) {
+            showCurrentSelection(JSON.parse(data));
         });
 
-        function graph(data){
-            console.log("graph()",data)
+
+        function showCurrentSelection(data){
+
+            //
+            // Welcome Screen
+            //
+            if (data && (data.show === 'welcome') ) {
+
+
+            } else {
+                console.log("set1name=", data.set1name)
+                console.log("set1name=", data.set2name)
+                console.log("set1name=", data.set3name)
+
+                $('#proposition1').html(data.set1name || "?")
+                $('#proposition2').html(data.set2name || "?")
+                $('#proposition3').html(data.set3name || "?")
+            }
+
         }

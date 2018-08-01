@@ -67,10 +67,11 @@ app.get('/start/:pid',
     routes.partyForm,
     routes.done);
 
-// Starting a new party (saving data)
+// Saving a new party info in DB
 app.post('/start/:pid',
     routes.init,
     routes.partyStore,
+    routes.setVotingInfo,
     routes.done);
 
 // Event manager Board
@@ -106,8 +107,10 @@ app.get('/dj/:pid',
     routes.done);
 
 // Dashboard for VJAY Screen
-app.get('/vjay/:pid',
+app.get('/vjay/:vid',
     routes.init,
+    //routes.getPartyInfo,
+    routes.getVotingInfo,
     routes.forVjay,
     routes.done);
 
@@ -129,15 +132,19 @@ app.get('/vote/:pid',
     routes.vote,
     routes.done);
 
+
+
+
 //-----------------------------------------
 // REST API Calls - Get The Queue List
 // ----------------------------------------
+
 app.get('/v1/queue/:pid',
     routes.init,
     routes.getQueue,
     routes.done);
 
-app.get('/v1/now/:pid',
+app.get('/v1/now/:vid',
     routes.init,
     routes.now,
     routes.done);
@@ -147,7 +154,8 @@ app.get('/v1/set/:setid',
     routes.getSetStat,
     routes.done);
 
-app.get('/v1/vote/:partytag/:userID/:voteNumber',
+app.get('/v1/vote/:vid/:userID/:voteNumber',
+    routes.getVotingInfo,
     routes.vote);
 
 
@@ -164,8 +172,7 @@ app.get('/qr/:userid/:number',
     routes.qr);
 
 
-
-app.get('/publish/:partytag/:setID',
+app.get('/publish/:pid/:setID',
     routes.publish );
 
 app.get('/delete/:partytag/:setID',

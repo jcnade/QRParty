@@ -20,6 +20,15 @@ function qrparty_vote(string) {
     console.log('qrparty_vote()', string)
     console.log('qrparty_vote()', vote)
 
+    var vid   = vote[1];
+    var uid   = vote[2];
+    var value = vote[3];
+
+    // Voting via the API
+    $('/v1/vote/'+vid+'/'+uid+'/'+value, function(response){
+        console.log('response',response)
+    })
+
 }
 
 
