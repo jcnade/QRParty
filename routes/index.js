@@ -296,8 +296,17 @@ exports.publish = function(req, res){
      redis.lindex( 'queue-'+ req.params.pid, req.params.setID , function(err,data){
           if (!err)  {
 
-              // Moving the element on the queue to the current
-              redis.set( 'now-'+ req.params.pid, data);
+              // Updating a field in data but its a string so
+              // we havce to parse it
+              var temp = JSON.parse(data);
+                  temp['show'] = 'vote';
+                  data = JSON.stringify(temp);
+
+              redis.set( 'now-'+ res.locals.partyInfo.vid, data, function(err){
+                  if (err) {
+                      console.error('publish() ERROR with redis.set :',err)
+                  }
+              });
 
               // removing the element
               redis.lrem( 'queue-'+ req.params.pid, req.params.setID, data);
@@ -436,7 +445,7 @@ exports.addQueue = function(req, res){
            res.status(500).send("500 - Can not save");
        } else {
            console.log("addset() RPUSH",id, JSON.stringify(payload))
-           res.redirect('/admin/'+ req.params.pid);
+           res.redirect('/dj/'+ req.params.pid);
 
        }
     });

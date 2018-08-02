@@ -87,17 +87,21 @@ app.get('/encoder/:pid',
     routes.encoder,
     routes.done);
 
+
+/* Get the Queue List */
+app.get('/queue/:pid',
+    routes.init,
+    routes.getPartyInfo,
+    routes.showQueue,
+    routes.done);
+
+/* Adding 3 set in the queue */
 app.post('/queue/:pid',
     routes.init,
     routes.getPartyInfo,
     routes.addQueue,
     routes.done);
 
-app.get('/queue/:pid',
-    routes.init,
-    routes.getPartyInfo,
-    routes.showQueue,
-    routes.done);
 
 // Dashboard for DJ
 app.get('/dj/:pid',
@@ -134,7 +138,6 @@ app.get('/vote/:pid',
 
 
 
-
 //-----------------------------------------
 // REST API Calls - Get The Queue List
 // ----------------------------------------
@@ -158,7 +161,14 @@ app.get('/v1/vote/:vid/:userID/:voteNumber',
     routes.getVotingInfo,
     routes.vote);
 
+app.get('/v1/publish/:pid/:setID',
+    routes.init,
+    routes.getPartyInfo,
+    routes.publish );
 
+//
+// Old Route
+//
 
 
 app.get('/scan/:partytag',
@@ -171,9 +181,6 @@ app.get('/steam',
 app.get('/qr/:userid/:number',
     routes.qr);
 
-
-app.get('/publish/:pid/:setID',
-    routes.publish );
 
 app.get('/delete/:partytag/:setID',
     routes.delete );
