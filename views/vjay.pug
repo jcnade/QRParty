@@ -28,7 +28,12 @@ html
                 width: 100%;
                 height: 100%;
             }
-
+            #chrono {
+                color: #f0f0f0;
+                font-weight: bold;
+                font-size: 200%;
+                padding: 7px;
+            }
 
             .center {
                 position: fixed;
@@ -42,7 +47,7 @@ html
 
             .center3 {
                 position: fixed;
-                top: 20%;
+                top: 10%;
                 margin-top: 100px;
                 text-align: center;
                 width: 100%;
@@ -73,6 +78,15 @@ html
                 text-shadow: 0 0 5px rgb(255, 255, 255), 0 0 10px rgb(255, 255, 255), 0 0 15px rgb(255, 255, 255), 0 0 20px rgb(255, 17, 119), 0 0 35px rgb(255, 17, 119), 0 0 40px rgb(255, 17, 119), 0 0 50px rgb(255, 17, 119), 0 0 75px rgb(255, 17, 119);
             }
 
+            .topright {
+                position: absolute;
+                top: 8px;
+                right: 16px;
+                font-size: 18px;
+            }
+
+        .topright
+            #chrono
 
         #welcome
             img(src='/img/start.jpg', width="100%")
@@ -82,9 +96,10 @@ html
 
         #vote.hide
             .center3
-                #proposition1.night-hotel.m4
-                #proposition2.night-hotel.m4
-                #proposition3.night-hotel.m4
+                #proposition1.night-hotel.m9
+                #proposition2.night-hotel.m9
+                #proposition3.night-hotel.m9
+
 
 
 #chart
@@ -101,11 +116,47 @@ html
 
         function getData() {
             // Get the current vote for this party-ID
-            $.get('/v1/now/#{vid}', function (data) {
-                showCurrentSelection(JSON.parse(data));
+            $.get('/v1/now/#{vid}', function (string) {
+                var data = JSON.parse(string)
+                showCurrentSelection(data);
+                chrono(data);
             });
         }
 
+        function chrono(data) {
+            if (data.time) {
+                //
+                // count down !!
+                //
+                var countDownDate = data.time + (data.minutes*60*1000);
+
+                // Update the count down every 1 second
+                var x = setInterval(function () {
+
+                    // Get todays date and time
+                    var now = new Date().getTime();
+
+                    // Find the distance between now and the count down date
+                    var distance = countDownDate - now;
+
+                    // Time calculations for days, hours, minutes and seconds
+                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Display the result in the element with id="demo"
+                    document.getElementById("chrono").innerHTML = days + "d " + hours + "h "
+                        + minutes + "m " + seconds + "s ";
+
+                    // If the count down is finished, write some text
+                    if (distance < 0) {
+                        clearInterval(x);
+                        document.getElementById("chrono").innerHTML = "FINISHED";
+                    }
+                }, 1000);
+            }
+        }
 
         function showCurrentSelection(data){
 

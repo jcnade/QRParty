@@ -94,6 +94,7 @@ exports.getVotingInfo = function (req,res, next) {
                 res.status(500).send("500 - Service unavailable (JSON.parse)");
                 console.error('partyStore() ERROR with JSON.Parse', e);
             }
+            console.log(res.locals.votingInfo);
             next();
         }
     });
@@ -300,6 +301,7 @@ exports.publish = function(req, res){
               // we havce to parse it
               var temp = JSON.parse(data);
                   temp['show'] = 'vote';
+                  temp['time'] =  Date.now();
                   data = JSON.stringify(temp);
 
               redis.set( 'now-'+ res.locals.partyInfo.vid, data, function(err){
@@ -437,6 +439,7 @@ exports.addQueue = function(req, res){
         'set1id'   :  'set1'+shortid.generate(),
         'set2id'   :  'set2'+shortid.generate(),
         'set3id'   :  'set3'+shortid.generate(),
+        'minutes'  :  parseInt(req.body.minutes)
     };
 
     redis.rpush( id ,  JSON.stringify(payload), function(err){
