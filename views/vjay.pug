@@ -107,27 +107,40 @@ html
 
     script(type='text/javascript').
 
-        getData();
+        //
+        // Start Chrono
+        //
+        getData(function(data){
+            chronoRender(data);
+        });
 
+        //
+        // Each 5 second, check for update
+        //
         (function () {
-            getData()
+            getData(function(data){
+                welcomeScreen(data);
+                votingSelectionScreen(data);
+            })
             setTimeout(arguments.callee, 5*1000);
         })();
 
-        function getData() {
-            // Get the current vote for this party-ID
+
+        //
+        // API Call to get all the voting info
+        //
+        function getData(callback) {
             $.get('/v1/now/#{vid}', function (string) {
                 var data = JSON.parse(string)
-                showCurrentSelection(data);
-                chrono(data);
+                callback(data);
             });
         }
 
-        function chrono(data) {
-            if (data.time) {
-                //
-                // count down !!
-                //
+        //
+        // rendoring in HTML the chrono as a count down
+        //
+        function chronoRender(data) {
+            if (data && data.time) {
                 var countDownDate = data.time + (data.minutes*60*1000);
 
                 // Update the count down every 1 second
@@ -145,9 +158,14 @@ html
                     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
+                    var html = ''
+                    if (days    >0 ) { html += days    + "d "}
+                    if (hours   >0 ) { html += hours   + "h "}
+                    if (minutes >0 ) { html += minutes + "m "}
+                    if (seconds >0 ) { html += seconds + "s "}
+
                     // Display the result in the element with id="demo"
-                    document.getElementById("chrono").innerHTML = days + "d " + hours + "h "
-                        + minutes + "m " + seconds + "s ";
+                    document.getElementById("chrono").innerHTML = html;
 
                     // If the count down is finished, write some text
                     if (distance < 0) {
@@ -158,21 +176,17 @@ html
             }
         }
 
-        function showCurrentSelection(data){
 
-            console.log(data)
-            console.log(data.show)
-            //
-            // Welcome Screen
-            //
-            if (data && (data.show === 'welcome') ) {
+        function welcomeScreen(data) {
+            if (data && (data.show === 'welcome')) {
                 //
                 // Welcome Screen
                 //
                 $('#display').addClass('hide');
-
             }
+        }
 
+        function votingSelectionScreen(data) {
             if (data && (data.show === 'vote')) {
                 //
                 // Welcome Screen
@@ -183,5 +197,4 @@ html
                 $('#proposition2').html(data.set2name || "?")
                 $('#proposition3').html(data.set3name || "?")
             }
-
         }
