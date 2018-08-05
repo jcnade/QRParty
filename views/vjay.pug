@@ -121,6 +121,7 @@ html
             getData(function(data){
                 welcomeScreen(data);
                 votingSelectionScreen(data);
+                chronoRender(data);
             })
             setTimeout(arguments.callee, 5*1000);
         })();

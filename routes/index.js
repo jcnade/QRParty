@@ -101,6 +101,29 @@ exports.getVotingInfo = function (req,res, next) {
 };
 
 
+
+exports.getCode = function (req,res, next) {
+
+    redis.get( req.body.code, function(err,vid){
+        if (err) {
+            res.status(500).send("500 - Service unavailable (redis)");
+            console.error('getCode() ERROR with redis.get()', err);
+        } else {
+
+            // per default is wrong and we return back to login page
+            // with an notfound query marker
+
+            res.locals.redirect = "/login/"+req.params.page+'?err=notfound';
+            if (vid) {
+                res.locals.redirect = "/"+req.params.page+'/'+vid;
+            }
+            next();
+        }
+    });
+
+};
+
+
 exports.index = function(req, res, next){
 
     // Generate a new uniq ID
@@ -124,24 +147,44 @@ exports.partyForm = function(req, res, next){
 };
 
 
+// Login Screen
+exports.loginForm = function(req, res, next){
+
+    var options = {
+        page : req.params.page // (secret) party ID
+    };
+    res.locals.html = pug.renderFile('./views/loginForm.pug', options);
+    next();
+
+};
+
+
 // Saving Party Info
-exports.partyStore = function(req, res, next){
+exports.setParty = function(req, res, next){
 
-        var partyInfo         = merge(req.params, req.body);
-            partyInfo['vid']  = 'vid'+shortid.generate(); // public voting id
+    var partyInfo         = merge(req.params, req.body);
+        partyInfo['vid']  = 'vid'+shortid.generate(); // public voting id
 
-        redis.set( req.params.pid, JSON.stringify(partyInfo), function(err){
-            if (err) {
-                res.status(500).send("500 - Service offline (redis)");
-                console.error('partyStore() ERROR with redis.set()', err);
-            } else {
-                res.locals.vid       = partyInfo['vid'];
-                res.locals.partyInfo = partyInfo;
-                res.locals.html      = null;
-                res.locals.redirect  = '/admin/'+ req.params.pid;
-                next();
-            }
-        });
+    var code  = (Math.random().toString(36).substring(7)[0]).toUpperCase();
+        code += (Math.random().toString(36).substring(7)[0]).toUpperCase();
+        code += (Math.random().toString(36).substring(7)[0]).toUpperCase();
+        code += (Math.random().toString(36).substring(7)[0]).toUpperCase();
+        partyInfo['code'] = code;
+
+    res.locals.partyInfo = partyInfo;
+
+    redis.set( req.params.pid, JSON.stringify(partyInfo), function(err){
+        if (err) {
+            res.status(500).send("500 - Service offline (redis)");
+            console.error('setParty() ERROR with redis.set()', err);
+        } else {
+            res.locals.vid       = partyInfo['vid'];
+            res.locals.partyInfo = partyInfo;
+            res.locals.html      = null;
+            res.locals.redirect  = '/admin/'+ req.params.pid;
+            next();
+        }
+    });
 };
 
 
@@ -154,12 +197,27 @@ exports.setVotingInfo = function(req, res, next){
     redis.set( 'now-'+req.params.vid, JSON.stringify(votingInfo), function(err){
         if (err) {
             res.status(500).send("500 - Service offline (redis)");
-            console.error('displayInit() ERROR with redis.set()', err);
+            console.error('setVotingInfo() ERROR with redis.set()', err);
         } else {
             next();
         }
     });
 };
+
+
+// Saving Public Voting Info
+exports.setCode = function(req, res, next){
+
+    redis.set( res.locals.partyInfo.code, res.locals.partyInfo.vid, function(err){
+        if (err) {
+            res.status(500).send("500 - Service offline (redis)");
+            console.error('setCode() ERROR with redis.set()', err);
+        } else {
+            next();
+        }
+    });
+};
+
 
 
 

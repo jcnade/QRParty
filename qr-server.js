@@ -67,12 +67,31 @@ app.get('/start/:pid',
     routes.partyForm,
     routes.done);
 
+
 // Saving a new party info in DB
 app.post('/start/:pid',
     routes.init,
-    routes.partyStore,
+    routes.setParty,
     routes.setVotingInfo,
+    routes.setCode,
     routes.done);
+
+
+// Starting a new party (form)
+app.get('/login/:page',
+    routes.init,
+    routes.loginForm,
+    routes.done);
+
+// Saving a new party info in DB
+app.post('/login/:page',
+    routes.init,
+    routes.getCode,
+    routes.done);
+
+
+// Starting a new party (for
+
 
 // Event manager Board
 app.get('/admin/:pid',

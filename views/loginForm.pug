@@ -1,0 +1,31 @@
+doctype html
+html
+    head
+        title Party Login
+        include head
+    body
+        include logo
+        .container
+            .row-fluid
+                .col-lg-5(class="justify-content-md-center").pt8
+
+                    form(class="'form-horizontal", action="/login/"+page, method='post')
+
+                        .form-group
+                            .control-group
+
+                                if page === "vjay"
+                                    label(class='control-label') Public Screen (VJay) Party Code
+
+                                if page === "dj"
+                                    label(class='control-label') DJ Console - Party Code
+
+                                if page === "vote"
+                                    label(class='control-label') Voting Station  - Party Code
+
+                                .controls
+                                    input(class='input-small', id="code" name='code', placeholder='', value="").form-control
+
+                        .control-group
+                            .controls
+                                button(type='submit', class='btn') Go!
