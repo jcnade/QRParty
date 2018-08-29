@@ -15,7 +15,7 @@ var merge   = require('merge');
 
 redis = redis.createClient(config.redis.port, config.redis.host);
 redis.on("error", function (err) {
-  console.log(" Can't connect to redis " + err);
+  console.error(" Can't connect to redis " + err);
 });
 
 
@@ -66,11 +66,6 @@ exports.getPartyInfo = function (req,res, next) {
             if (res.locals.partyInfo && res.locals.partyInfo.vid) {
                 res.locals.vid = res.locals.partyInfo.vid;
             }
-            console.log("------------------");
-            console.log("partyInfo");
-            console.log(res.locals.partyInfo);
-            console.log("------------------");
-
             next();
         }
     });
@@ -94,7 +89,6 @@ exports.getVotingInfo = function (req,res, next) {
                 res.status(500).send("500 - Service unavailable (JSON.parse)");
                 console.error('partyStore() ERROR with JSON.Parse', e);
             }
-            console.log(res.locals.votingInfo);
             next();
         }
     });
@@ -251,8 +245,7 @@ exports.vote = function(req, res){
                 //
                 // We need to check if the user allready voted
                 //
-                console.log('vote/'+ setid +  req.params.userID);
-					
+
                 redis.get( 'vote/'+ setid + req.params.userID , function(err,vdata){
 						// if we are here
 						// user ID is ok
@@ -260,7 +253,6 @@ exports.vote = function(req, res){
 							//
 							// allready voted
 							//
-							//console.log(" allready");
 							res.send( {vote: 'allready', 'setname': setname } );
 						} else {
 							//
@@ -268,8 +260,7 @@ exports.vote = function(req, res){
 							//
 							redis.incrby( 'set/'+setid, 1 );
 							redis.set( 'vote/'+setid+req.params.userID, "voted" );
-							console.log("*** New vote ****");
-							res.send( {vote: 'voted', 'setname': setname} ); 
+							res.send( {vote: 'voted', 'setname': setname} );
 						}
 						//console.log(' vdata' + vdata);
 
@@ -344,6 +335,12 @@ exports.vote = function(req, res, next) {
 };
 
 
+exports.renderDemo = function(req, res, next) {
+    var options = merge(req.params, res.locals.votingInfo);
+    res.locals.html = pug.renderFile("./views/demo.pug", options );
+    next();
+};
+
 
 
 
@@ -377,8 +374,7 @@ exports.publish = function(req, res){
               // Didn't work :/
               //
               res.status(500).send("500 - can not publish");
-              console.log("publish() ERROR with redis - ", err);
-          }            
+          }
      });         
 
 };
@@ -393,25 +389,14 @@ exports.publish = function(req, res){
  */
   
 exports.delete = function(req, res){
-
-               
      redis.lindex( 'set/'+ req.params.partytag, req.params.setID , function(err,data){
-          if (!err) 
-          {
+         if (!err)  {
               res.redirect('/admin/'+ req.params.partytag);
-             
-             console.log(" set:"+ req.params.setID  +' = '+  data);
-          
-	     redis.lrem( 'set/'+ req.params.partytag, -1, data);
-
-	
-	 }
-          else
-          {
+     	     redis.lrem( 'set/'+ req.params.partytag, -1, data);
+     	 } else {
             console.log("redis eror " + err);
           }            
      });         
-
 };
 
 

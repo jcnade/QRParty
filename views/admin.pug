@@ -11,6 +11,21 @@ html
                 .col
                     h1 #{name}
 
+            .row.mt10.w14
+                .col
+
+                    h4 QR Party Setup
+
+                    | Congratulation, your QR Party is setup.
+                    |
+                    | Your party code is <B>#{code}</b> ; Write it down
+                    | and giv it to your DJ to get access to the console.
+
+                    .breadcrumb.center
+                        center
+                            | #{code}
+
+
             .row
                 .col-sm
                     .w11
@@ -18,15 +33,19 @@ html
                             i(class="fa fa-chart-line fa-3x")
                             br
                             | Public Screen
+                .col-
+                    p kikou
 
-                .col-sm
+            .row
+                .col-
                     .w11
                         a(href="/encoder/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
                             i(class="fa fa-qrcode fa-3x")
                             br
                             | Print QR List
 
-                .col-sm
+            .row
+                .col-
                     .w11
                         a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
                             i(class="fa fa-headphones fa-3x")
@@ -65,18 +84,6 @@ html
 
 
             .row
-
-                .col
-                    h4.m7 Step by Step
-
-                    ol
-                        li <a href="/encoder/#{pid}" >Print your QR List</A>. Each participant need to have 3 unique QRcode for voting A, B or C.
-
-                        li Make one or several public screen or video projection on this URL:  <a href="/vjay/"+#{vid}>http://localhost:3001/vjay/+#{vid}</A>
-
-                        li Give this URL or this code at your DJ <a href="/dj/#{pid}">ici</A>.
-
-
 
 
 

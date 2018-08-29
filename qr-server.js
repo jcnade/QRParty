@@ -155,6 +155,10 @@ app.get('/vote/:pid',
     routes.vote,
     routes.done);
 
+app.get('/demo',
+    routes.init,
+    routes.renderDemo,
+    routes.done);
 
 
 //-----------------------------------------
@@ -185,6 +189,8 @@ app.get('/v1/publish/:pid/:setID',
     routes.getPartyInfo,
     routes.publish );
 
+
+
 //
 // Old Route
 //
@@ -213,7 +219,9 @@ app.get('/vote/:partytag/:userid/:setid',
 
 
 app.listen(config.service.port, function () {
-    console.log("starting", config.service.name, "on port", config.service.port);
+    console.log(config.service.name, " - Starting web server on port", config.service.port);
+    console.log(config.service.name, " - http://localhost:"+config.service.port);
+
 });
 
 

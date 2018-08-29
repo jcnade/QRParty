@@ -1,0 +1,64 @@
+doctype html
+html
+    head
+        title #{name} - QR Party
+        include head
+    body
+
+        style.
+
+            body {
+                background-color: #aaaaaa;
+            }
+
+            html {
+            }
+
+            #demo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                margin: auto;
+                min-width: 90%;
+                min-height: 90%;
+                border: 2px solid red;
+            }
+
+
+        #demo
+
+
+    script(type='text/javascript').
+
+        var options = {
+            id:       '#demo',
+            largeurEnPoursent : "15",
+            set : [
+                {
+                    'name' : "rock",
+                    'point' : 50,
+                    'poursent': 50
+                },
+                {
+                    'name' : "rock",
+                    'point' : 10,
+                    'poursent': 10
+                },
+                {
+                    'name' : "rock",
+                    'point' : 40,
+                    'poursent': 40
+                },
+
+            ]
+        }
+
+        $(document).ready(function () {
+            options = qr_chart(options);
+        });
+
+        $(window).resize(function () {
+            $( options.id ).empty();
+            options = qr_chart(options);
+        });
+
