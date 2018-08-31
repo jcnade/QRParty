@@ -3,95 +3,56 @@ html
     head
         title #{name} - QR Party
         include head
+
     body
+
         include logo
 
         .container
-            .row
+            .row.align-items-center.justify-content-center
+                .col.align-items-start
+                .col.col-6
+                    .postIt.mb7
+                        | Congratulation, your QR Party server is
+                        | is now setup ! Your private party code
+                        | for DJ and video screen is  <B>#{code}</b>
                 .col
-                    h1 #{name}
 
-            .row.mt10.w14
+            .row.align-items-center.justify-content-center
+                .col.align-items-start
+                .col.col-6
+                    a(href="/encoder/" + pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-qrcode fa-3x")
+                        br
+                        | Print QR List
+
+                    a(target="_none" href="/vjay/" + vid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-chart-line fa-3x")
+                        br
+                        | Public Screen
+
+                    a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-headphones fa-3x")
+                        br
+                        | Print DJ Info
+
+                    a(href="/vote/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-check-square fa-3x")
+                        br
+                        | Voting Station
+
+                    a(href="/queue/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-list-ol fa-3x")
+                        br
+                        | LineUp Queue
+
+                    a(href="/api/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-book fa-3x")
+                        br
+                        | REST API DOC
+
+                    a(href="/dj/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
+                        i(class="fa fa-headphones fa-3x")
+                        br
+                        | DJ Console
                 .col
-
-                    h4 QR Party Setup
-
-                    | Congratulation, your QR Party is setup.
-                    |
-                    | Your party code is <B>#{code}</b> ; Write it down
-                    | and giv it to your DJ to get access to the console.
-
-                    .breadcrumb.center
-                        center
-                            | #{code}
-
-
-            .row
-                .col-sm
-                    .w11
-                        a(href="/vjay/" + vid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-chart-line fa-3x")
-                            br
-                            | Public Screen
-                .col-
-                    p kikou
-
-            .row
-                .col-
-                    .w11
-                        a(href="/encoder/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-qrcode fa-3x")
-                            br
-                            | Print QR List
-
-            .row
-                .col-
-                    .w11
-                        a(href="/djinfo/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-headphones fa-3x")
-                            br
-                            | Print DJ Info
-
-            .row
-
-                .col-sm
-                    .w11
-                        a(href="/vote/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-check-square fa-3x")
-                            br
-                            | Voting Station
-
-                .col-sm
-                    .w11
-                        a(href="/queue/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-list-ol fa-3x")
-                            br
-                            | LineUp Queue
-
-                .col-sm
-                    .w11
-                        a(href="/api/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-book fa-3x")
-                            br
-                            | REST API DOC
-            .row
-                .col-sm
-                    .w11
-                        a(href="/dj/"+pid, rel="nofollow", class="btn btn-sq btn-primary")
-                            i(class="fa fa-headphones fa-3x")
-                            br
-                            | DJ Console
-
-
-            .row
-
-
-
-
-
-
-
-
-
-
-
