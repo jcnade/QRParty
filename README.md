@@ -55,28 +55,47 @@ No specific hardware is needed like a barcode.Some old laptop with a webcam are 
 
 ## Requirement 
 
-    apt-get install qrencode
+     * Linux / Ubuntu
+     * Redis
+     * NodeJS & npm
+     * apt-get install qrencode
 
 
-## Installation
+
+
+# Setup
+
+
+KeyDB install on Ubuntu
+
+     echo "deb https://download.keydb.dev/open-source-dist $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/keydb.list
+     sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
+     sudo apt update
+     sudo apt install keydb
+
+
+Clone the code
 
     git clone git@github.com:jcnade/QRParty.git
     cd QRParty
     npm install
     node qr-server
-    
 
 
 ## How to use it
 
 Start the webserver on port 3000
+
      node qr-server 
 
 You can build a PartyTag here
+
      http://<IP-of-your-server>:3000/admin
 
 And connect some terminal with webcam there
+
      http://<IP-of-your-server>:3000/
+
 
 
 ## Beerware
