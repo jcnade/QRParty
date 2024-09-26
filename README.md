@@ -97,6 +97,13 @@ And connect some terminal with webcam there
      http://<IP-of-your-server>:3000/
 
 
+# Maintenance
+
+Packages security update
+
+     ncu -u
+
+
 
 ## Beerware
 
