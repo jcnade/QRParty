@@ -7,15 +7,15 @@
   },
   "dependencies": {
     "body-parser": "^1.20.5",
-    "config": "3.3.12",
+    "config": "^4.4.1",
     "cookie-parser": "^1.4.7",
-    "ejs": "3.1.10",
+    "ejs": "^6.0.1",
     "express": "^4.22.2",
     "js-yaml": "^4.2.0",
     "merge": "2.1.1",
-    "pug": "3.0.3",
+    "pug": "^3.0.4",
     "qrcode": "1.5.4",
-    "redis": "4.7.0",
+    "redis": "^6.0.0",
     "shortid": "^2.2.17"
   }
 }
