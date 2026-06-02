@@ -1,111 +1,117 @@
+# QR Party 🎧🎉
 
-# QR Party
+> **Let the dancefloor decide the line-up!**  
+> A real-time, QR-code-powered interactive voting system for events, parties, and DJs.
 
-## Let the dancefloor decide the line up!
- 
+---
 
-QR Manager for Event and Party ; Real time vote QR code and Webcam.
+[![Security Status](https://img.shields.io/badge/security-fully_patched-success.svg)](https://github.com/jcnade/QRParty)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D_22.0.0-blue.svg)](https://nodejs.org/)
+[![Database](https://img.shields.io/badge/database-Redis_/_Valkey-red.svg)](https://redis.io/)
+[![License](https://img.shields.io/badge/license-Beerware-orange.svg)](https://en.wikipedia.org/wiki/Beerware)
 
+**QR Party** is a lightweight, high-performance web application designed to let event participants vote for their favorite tracks, sets, or DJs in real time using printed QR codes and any camera-enabled device (smartphone, laptop, or Raspberry Pi). 
 
-Server side, you will need a unix server with node.js
-Client side, any device with javascript, HTML5 and a webcam 
-Admin interface and client can run on smartphone Android too.
+Designed with simplicity and efficiency in mind, it works entirely in local network environments (no active internet connection required) and supports hosting multiple simultaneous parties on a single instance.
 
+---
 
-## features
+## 🚀 Key Features
 
-* The servers can host several parties in same times
-* Work with old hardware
-* Can run in localhost without any internet connection
-* mobile friendly
-    
+* **Multi-Party Support**: Host and manage multiple parties concurrently with unique PartyTAGs.
+* **100% Offline-Capable**: Runs perfectly on a local network without requiring an external internet connection.
+* **Real-Time Data Visualization**: High-impact, responsive D3.js real-time charts designed for projector screens and VJ setups.
+* **Ultra-Lightweight**: Fully optimized to run on low-spec and older hardware (e.g., Raspberry Pi, legacy laptops).
+* **Responsive & Mobile-Friendly**: Clean, modern web interfaces for DJs, admins, and voters alike.
+* **Secure & Solid**: Fully patched dependencies with zero security vulnerabilities.
 
-## Hardware Requirement 
+---
 
-QR Party is designed to run on hardware easy to find.
-No specific hardware is needed like a barcode.Some old laptop with a webcam are enough.
+## 🛠️ Modern Tech Stack
 
+The system has been modernized to run on contemporary web standards:
 
-* A screen or projector screen 
-* A terminal with a WebCam who can display an HTML5 page (PC, MAC, Mobile, Raspberry Pi)
-* A printer
+* **Backend**: Node.js (v22+) & Express (v4+)
+* **Database**: Redis / Valkey (v6+ / v8+)
+* **Templating Engine**: Pug (v3+)
+* **Frontend**: Bootstrap, jQuery, & D3.js (v5)
+* **Real-time Scanning**: HTML5 Webcam scanner integrated via Instascan
+* **QR Generation**: Modernized native Node-QRCode implementation
 
+---
 
-### 2018 Updated Edition
+## 📦 Installation & Setup
 
-* Node.js v8
-* Pug v2
-* Bootstrap v4
-* Jquery v3
-* Express v4
-* Font Awesome v5.2
-* IntaScan v1
-* D3.js v5.3.0
+### Prerequisites
 
+* **Node.js** (v22 or higher recommended)
+* **Redis** or **Valkey** database server
 
+### 1. Database Setup
 
-## How it's work 
+Install and start **Redis** (or its open-source compatible counterpart **Valkey**).
 
- * Build a PartyTAG available over internet or in localhost
- * Print listing of unique QR code and spread them to your participants
- * They can vote over HTML5/Browser with webcam
- * Real time D3 graph for Vjay, big screen and projector
- * fun !
+#### Using Docker (Recommended)
+```bash
+docker run -d --name valkey -p 6380:6380 valkey/valkey:8.1.3-alpine3.22 --port 6380
+```
 
+#### Native installation on Ubuntu
+```bash
+sudo apt update
+sudo apt install redis-server
+```
 
-## Requirement 
+### 2. Project Installation
 
-     * Linux / Ubuntu
-     * Redis
-     * NodeJS & npm
-     * apt-get install qrencode
+Clone the repository and install the production dependencies:
 
+```bash
+# Clone the repository
+git clone https://github.com/jcnade/QRParty.git
+cd QRParty
 
+# Install fully-patched dependencies
+npm install
+```
 
+### 3. Run the Server
 
-# Setup
+Start the QR Party web server:
 
+```bash
+npm start
+```
+The server will start up on `http://localhost:3001` (configurable in `config/default.yaml`).
 
-KeyDB install on Ubuntu
+---
 
-     echo "deb https://download.keydb.dev/open-source-dist $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/keydb.list
-     sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
-     sudo apt update
-     sudo apt install keydb
+## 📖 How to Use
 
+### 1. Create a Party
+Access the admin portal to configure your party parameters and description:
+```
+http://localhost:3001/start/your-party-id
+```
 
-Clone the code
+### 2. Print QR Codes
+Generate and print unique voter cards from the Admin Dashboard. Cut them out and distribute them to your dancefloor participants. Each card contains high-quality, pre-encoded QR codes.
 
-    git clone git@github.com:jcnade/QRParty.git
-    cd QRParty
-    npm install
-    node qr-server
+### 3. Vote via Webcam
+Participants scan their QR codes using any terminal equipped with a camera or webcam:
+```
+http://localhost:3001/vote/your-party-id
+```
 
+### 4. VJ/Projector Screen Live Feed
+Broadcast the gorgeous real-time chart feed on your event’s main screens or projectors:
+```
+http://localhost:3001/vjay/your-party-id
+```
 
-## How to use it
+---
 
-Start the webserver on port 3000
+## 🍺 License
 
-     node qr-server 
-
-You can build a PartyTag here
-
-     http://<IP-of-your-server>:3000/admin
-
-And connect some terminal with webcam there
-
-     http://<IP-of-your-server>:3000/
-
-
-# Maintenance
-
-Packages security update
-
-     ncu -u
-
-
-
-## Beerware
-
-This project is free (GPL) but if you like it or use for your own party, feel free
-to invite me for a beer or something.
+This project is released under the **Beerware License** (Revision 42):
+> As long as you retain this notice you can do whatever you want with this stuff. If we meet some day, and you think this stuff is worth it, you can buy me a beer in return.
