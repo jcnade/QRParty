@@ -5,15 +5,22 @@ var shortid = require('shortid');
 var pug     = require("pug");
 var redis   = require("redis");
 var config  = require("config");
-var uuid    = require('node-uuid');
-var Encoder = require('qr').Encoder;
 var merge   = require('merge');
 
 
 
 // Starting Redis
 
-redis = redis.createClient(config.redis.port, config.redis.host);
+redis = redis.createClient({
+    socket: {
+        host: config.redis.host,
+        port: config.redis.port
+    },
+    legacyMode: true
+});
+redis.connect().catch(function(err) {
+    console.error("Redis connection error:", err);
+});
 redis.on("error", function (err) {
   console.error(" Can't connect to redis " + err);
 });
@@ -424,7 +431,8 @@ exports.getQueue = function(req, res){
 exports.getSetStat = function(req, res, next) {
     redis.get( 'now/'+ req.params.setid, function(err,string) {
         if (!err) {
-            res.locals.html(string);
+            res.locals.html = string;
+            next();
         } else {
             console.error("getSetStat ERROR", err);
             res.status(500).send("500")
@@ -436,7 +444,7 @@ exports.getSetStat = function(req, res, next) {
 exports.now = function(req, res, next){
     redis.get( 'now-'+ req.params.vid, function(err,data){
         if (!err) {
-    		res.locals.json = data || {};
+    		res.locals.json = data ? JSON.parse(data) : {};
     		next();
         } else {
             console.log("redis eror " + err);
@@ -536,7 +544,7 @@ var QRCode = require('qrcode');
 exports.createQR = function(req, res){
     QRCode.toDataURL(req.params.string || "error", function (err, data) {
         var imagestring = data.split(',');
-        var img = new Buffer(imagestring[1], 'base64');
+        var img = Buffer.from(imagestring[1], 'base64');
         res.writeHead(200, {
             'Content-Type': 'image/png',
             'Content-Length': img.length
@@ -606,41 +614,20 @@ exports.encoder = function(req, res){
 
 
 exports.qr = function(req, res){
-
-
- process.nextTick(function () {
-      
-    var Encoder = require('qr').Encoder;
-    var encoder = new Encoder;
-
-
-	encoder.on('end', function(png_data){
-		res.header("Content-Type", "image/png")
-		// png_data is an instance of Buffer
-		res.send(png_data);
-	});
-
-	encoder.on('error', function(err){
-		// err is an instance of Error
-		// do something
-		console.log('error'+ err);
-	});
-
-	//encoder.encode('hello world');
-
-	var xoptions = {
-	              'dot_size': 3, 
-	              'margin': 4, 
-	              'level': 'L', 
-	              'case_sensitive': true, 
-	              'version': 1
-              };
-	                    
-	encoder.encode('/vote/'+req.params.userid +'/'+req.params.vote  );
-
-});
-
-
+    var codeString = '/vote/' + req.params.userid + '/' + (req.params.number || req.params.vote || '1');
+    QRCode.toDataURL(codeString, function (err, data) {
+        if (err) {
+            res.status(500).send("Error generating QR");
+            return;
+        }
+        var imagestring = data.split(',');
+        var img = Buffer.from(imagestring[1], 'base64');
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': img.length
+        });
+        res.end(img);
+    });
 };
 
 

@@ -25,7 +25,7 @@ function qrparty_vote(string) {
     var value = vote[3];
 
     // Voting via the API
-    $('/v1/vote/'+vid+'/'+uid+'/'+value, function(response){
+    $.get('/v1/vote/'+vid+'/'+uid+'/'+value, function(response){
         console.log('response',response)
     })
 
